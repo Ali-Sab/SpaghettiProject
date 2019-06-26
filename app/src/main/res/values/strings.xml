@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SpaghettiProject</string>
+    <string name="groups_intro">Your Groups</string>
 </resources>
