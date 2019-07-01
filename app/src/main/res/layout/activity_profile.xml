@@ -20,7 +20,7 @@
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.055" />
+        app:layout_constraintVertical_bias="0.301" />
 
     <EditText
         android:id="@+id/editTextEmail"
@@ -37,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewDescription"
-        app:layout_constraintVertical_bias="0.106" />
+        app:layout_constraintVertical_bias="0.164" />
 
     <EditText
         android:id="@+id/editTextPassword1"
@@ -54,7 +54,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
-        app:layout_constraintVertical_bias="0.169" />
+        app:layout_constraintVertical_bias="0.109" />
 
     <EditText
         android:id="@+id/editTextPassword2"
@@ -71,7 +71,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword1"
-        app:layout_constraintVertical_bias="0.143" />
+        app:layout_constraintVertical_bias="0.123" />
 
     <Button
         android:id="@+id/btnSetup"
@@ -87,6 +87,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword2"
-        app:layout_constraintVertical_bias="0.288"
+        app:layout_constraintVertical_bias="0.632"
         tools:text="Setup" />
+
 </android.support.constraint.ConstraintLayout>

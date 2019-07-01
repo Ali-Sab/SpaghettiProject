@@ -12,6 +12,7 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText pass1;
     private EditText pass2;
     private Button setup;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,9 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(pass1.getText().toString().equals(pass2.getText().toString())){
                     //isValidEmail(email.getText().toString());
+                    //Send user email to verify
+                    //Can add usernames later
+                    password = pass1.getText().toString();
                 }
             }
         });
