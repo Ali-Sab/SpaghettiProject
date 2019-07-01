@@ -10,5 +10,6 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="description">"In order to use this app, you must create an account so you can share your lists with your friends, family and more! Enter your information below to sign up!</string>
     <!--<string name="title_activity_groups">GroupsActivity</string>-->
 </resources>
