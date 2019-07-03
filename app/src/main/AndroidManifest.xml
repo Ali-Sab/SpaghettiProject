@@ -10,23 +10,40 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".ProfileActivity"></activity>
-        <activity android:name=".LoginActivity" />
+
         <activity
             android:name=".GroupsActivity"
             android:label="@string/title_activity_groups"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.spaghettiproject.MainActivity" />
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".LoginActivity"
+            android:label="LOGIN"
+
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
+
+
+
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:parentActivityName=".LoginActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.spaghettiproject.LoginActivity" />
+
+        </activity>
+
     </application>
 
 </manifest>

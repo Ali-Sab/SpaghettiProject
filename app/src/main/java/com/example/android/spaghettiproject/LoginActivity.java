@@ -26,13 +26,21 @@ public class LoginActivity extends AppCompatActivity {
         login = (Button) findViewById(R.id.btnLogin);
         loginText = (TextView)findViewById(R.id.textViewLogin);
 
-        loginText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent profileIntent = new Intent(LoginActivity.this, ProfileActivity.class);
-                startActivity(profileIntent);
-            }
-        });
+//        loginText.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent profileIntent = new Intent(LoginActivity.this, ProfileActivity.class);
+//                startActivity(profileIntent);
+//            }
+//        });
 
+    }
+
+    public void onClick(View view) {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToProfile(View view) {
     }
 }

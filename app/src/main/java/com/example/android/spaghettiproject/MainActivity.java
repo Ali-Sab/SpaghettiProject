@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void goToGroup(View view) {
-        Intent intent = new Intent(this, GroupsActivity.class);
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         intent.putExtra(EXTRA_MESSAGE, button.getText().toString());
         startActivity(intent);
     }
