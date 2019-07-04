@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">SpaghettiProject</string>
-    <string name="groups_intro">Your Groups</string>
+    <string name="app_name">Spaghetti Project</string>
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -11,5 +10,6 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="description">"In order to use this app, you must create an account so you can share your lists with your friends, family and more! Enter your information below to sign up!</string>
-    <string name="title_activity_groups">Group</string>
+    <string name="title_activity_lists">Lists</string>
+    <string name="title_activity_groups">Groups</string>
 </resources>

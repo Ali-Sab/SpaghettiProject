@@ -25,7 +25,7 @@ public class ListsActivity extends AppCompatActivity {
             }
         });
 
-        setTitle(getIntent().getStringExtra(GroupsActivity.EXTRA_MESSAGE));
+        getSupportActionBar().setTitle(getIntent().getStringExtra(GroupsActivity.EXTRA_MESSAGE));
 
     }
 
