@@ -28,7 +28,6 @@ public class GroupsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
 
-        button = (Button) findViewById(R.id.button_group);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -44,6 +43,7 @@ public class GroupsActivity extends AppCompatActivity {
         });
 
         mGroupList.addLast("Sample 1");
+        mGroupList.addLast("test???");
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mAdapter = new NextButtonListAdapter(this, mGroupList);
@@ -56,10 +56,4 @@ public class GroupsActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-
-    public void goToLists(View view) {
-        Intent intent = new Intent(GroupsActivity.this, ListsActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, button.getText().toString());
-        startActivity(intent);
-    }
 }

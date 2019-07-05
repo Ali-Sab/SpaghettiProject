@@ -4,15 +4,25 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import java.util.LinkedList;
+
 public class ListsActivity extends AppCompatActivity {
+
+    private final LinkedList<String> mListsList = new LinkedList<>();
+
+    private RecyclerView mRecyclerView;
+    private NextButtonListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lists);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -26,6 +36,14 @@ public class ListsActivity extends AppCompatActivity {
         });
 
         getSupportActionBar().setTitle(getIntent().getStringExtra(GroupsActivity.EXTRA_MESSAGE));
+
+        mListsList.addLast("Sample 1");
+        mListsList.addLast("test???");
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        mAdapter = new NextButtonListAdapter(this, mListsList);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }
 

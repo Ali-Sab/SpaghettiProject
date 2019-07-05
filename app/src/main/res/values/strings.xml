@@ -12,4 +12,5 @@
     <string name="description">"In order to use this app, you must create an account so you can share your lists with your friends, family and more! Enter your information below to sign up!</string>
     <string name="title_activity_lists">Lists</string>
     <string name="title_activity_groups">Groups</string>
+    <string name="sample_group">Group</string>
 </resources>

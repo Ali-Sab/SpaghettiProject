@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ public class NextButtonListAdapter extends RecyclerView.Adapter<NextButtonListAd
         @Override
         public void onClick(View v) {
             int mPosition = getLayoutPosition();
+            Log.d("position:", Integer.toString(mPosition));
             String element = mGroupList.get(mPosition);
 
             Intent intent;
@@ -39,7 +41,9 @@ public class NextButtonListAdapter extends RecyclerView.Adapter<NextButtonListAd
                 intent = new Intent(v.getContext(), ListsActivity.class);
             else
                 intent = new Intent(v.getContext(), ListsActivity.class);
+            Log.d("BEFORE PUTEXTRA:", "it works");
             intent.putExtra(GroupsActivity.EXTRA_MESSAGE, element);
+            Log.d("BEFORE STARTACTIVITY", "it works");
             v.getContext().startActivity(intent);
 
         }
@@ -58,9 +62,26 @@ public class NextButtonListAdapter extends RecyclerView.Adapter<NextButtonListAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NextButtonListAdapter.NextButtonListHolder holder, int position) {
-        String mCurrent = mGroupList.get(position);
+    public void onBindViewHolder(@NonNull final NextButtonListAdapter.NextButtonListHolder holder, int position) {
+        final String mCurrent = mGroupList.get(position);
         holder.nextButtonView.setText(mCurrent);
+        holder.nextButtonView.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Log.d("position:", Integer.toString(mPosition));
+
+                Intent intent;
+                String currentActivity = holder.nextButtonView.getContext().getClass().getSimpleName();
+                if (currentActivity.equals("GroupsActivity")) {
+                    intent = new Intent(v.getContext(), ListsActivity.class);
+                }
+                else {
+                    intent = new Intent(v.getContext(), ListsActivity.class);
+                }
+                intent.putExtra(GroupsActivity.EXTRA_MESSAGE, mCurrent);
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override

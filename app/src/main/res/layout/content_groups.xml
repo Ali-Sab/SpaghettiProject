@@ -9,25 +9,12 @@
     tools:context="com.example.android.spaghettiproject.GroupsActivity"
     tools:showIn="@layout/activity_groups">
 
-    <LinearLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </android.support.v7.widget.RecyclerView>
-
-        </ScrollView>
-
-    </LinearLayout>
+    </android.support.v7.widget.RecyclerView>
 
 
 </android.support.constraint.ConstraintLayout>
