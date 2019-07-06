@@ -23,11 +23,7 @@
 
         <activity
             android:name=".GroupsActivity"
-            android:label="@string/title_activity_groups"
-            android:parentActivityName=".LoginActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.android.spaghettiproject.LoginActivity" />
+            android:label="@string/title_activity_groups">
         </activity>
 
         <activity

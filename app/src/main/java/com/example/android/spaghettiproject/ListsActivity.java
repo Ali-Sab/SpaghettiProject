@@ -1,5 +1,6 @@
 package com.example.android.spaghettiproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -7,7 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.LinkedList;
 
@@ -25,6 +29,8 @@ public class ListsActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getIntent().getStringExtra(GroupsActivity.EXTRA_MESSAGE));
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -35,10 +41,8 @@ public class ListsActivity extends AppCompatActivity {
             }
         });
 
-        getSupportActionBar().setTitle(getIntent().getStringExtra(GroupsActivity.EXTRA_MESSAGE));
-
-        mListsList.addLast("Sample 1");
-        mListsList.addLast("test???");
+        mListsList.addLast("afag");
+        mListsList.addLast("njll;,");
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mAdapter = new NextButtonListAdapter(this, mListsList);
@@ -47,4 +51,37 @@ public class ListsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_log_out:
+                Intent intent = new Intent(ListsActivity.this,
+                        LoginActivity.class);
+                Toast.makeText(this,"Successfully logged out", Toast.LENGTH_LONG).show();
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                return true;
+            case R.id.action_settings:
+//                Intent settingsIntent = new Intent(this,
+//                        SettingsActivity.class);
+//                startActivity(settingsIntent);
+                Toast.makeText(this, "Make a settings activity", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_contact:
+                Toast.makeText(this, "Make a contact us page", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                // Do nothing
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
