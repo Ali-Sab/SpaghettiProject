@@ -7,18 +7,18 @@
     <item
         android:id="@+id/action_contact"
         android:orderInCategory="90"
-        android:title="Contact Us"
+        android:title="@string/contact_us"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="50"
-        android:title="Settings"
+        android:title="@string/settings"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_log_out"
         android:orderInCategory="100"
-        android:title="Log Out"
+        android:title="@string/log_out"
         app:showAsAction="never" />
 
 </menu>

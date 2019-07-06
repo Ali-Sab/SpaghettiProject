@@ -6,7 +6,7 @@
 
     <item
         android:id="@+id/action_contact"
-        android:title="Contact Us"
+        android:title="@string/contact_us"
         app:showAsAction="never" />
 
 </menu>
