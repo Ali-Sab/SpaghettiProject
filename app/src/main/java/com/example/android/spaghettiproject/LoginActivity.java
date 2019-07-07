@@ -66,6 +66,8 @@ public class LoginActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_contact:
                 Toast.makeText(this, "Make a contact us page", Toast.LENGTH_SHORT).show();
+                Intent contactIntent = new Intent(LoginActivity.this, ContactActivities.class);
+                startActivity(contactIntent);
                 return true;
             default:
                 // Do nothing

@@ -9,23 +9,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-
-        <activity android:name=".ProfileActivity"></activity>
-
+        <activity android:name=".ContactActivities"></activity>
+        <activity android:name=".ProfileActivity" />
         <activity
             android:name=".ListsActivity"
             android:label="@string/title_activity_lists"
-            android:parentActivityName=".GroupsActivity" >
+            android:parentActivityName=".GroupsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.spaghettiproject.GroupsActivity" />
         </activity>
-
         <activity
             android:name=".GroupsActivity"
-            android:label="@string/title_activity_groups">
-        </activity>
-
+            android:label="@string/title_activity_groups"></activity>
         <activity
             android:name=".LoginActivity"
             android:label="Login"
@@ -36,7 +32,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

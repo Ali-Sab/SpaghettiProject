@@ -16,4 +16,7 @@
     <string name="contact_us">Contact Us</string>
     <string name="settings">Settings</string>
     <string name="log_out">Log Out</string>
+    <string name="contact_text">Please send us an email if you have questions and feedback! We are eager to improve the quality of our app, and in order to do so, your issues will assist us greatly.
+
+    email@mail.ca</string>
 </resources>
