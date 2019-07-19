@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -14,6 +15,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.spaghettiproject.Retrofit.IMyService;
+import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText user;
@@ -21,11 +30,24 @@ public class LoginActivity extends AppCompatActivity {
     private Button login;
     private TextView loginText;
 
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    IMyService iMyService;
+
+    @Override
+    protected void onStop(){
+        compositeDisposable.clear();
+        super.onStop();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //Initialize Service
+        Retrofit retrofitClient = RetrofitClient.getInstance();
+        iMyService = retrofitClient.create(IMyService.class);
 
         if( getIntent().getBooleanExtra("Exit me", false)) {
             finish();
@@ -43,6 +65,27 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
+
+
+    private void loginUser(String email, String password){
+        if(TextUtils.isEmpty(email)){
+            Toast.makeText(this,"Email cannot be empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(TextUtils.isEmpty(password)){
+            Toast.makeText(this,"Password cannot be empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        compositeDisposable.add(iMyService.loginUser(email,password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers).subscribeOn(new Consumer<String>(){
+            @Override
+            public void accept(String response) throws Exception{
+                Toast.makeText(LoginActivity.this, ""+response,Toast.LENGTH_SHORT).show();
+            }
+        }))
+    }
+
 
     @Override
     public void onBackPressed() {

@@ -3,12 +3,20 @@ package com.example.android.spaghettiproject;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.android.spaghettiproject.Retrofit.IMyService;
+import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 
 import org.w3c.dom.Text;
+
+import io.reactivex.disposables.CompositeDisposable;
+import retrofit2.Retrofit;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -18,16 +26,22 @@ public class ProfileActivity extends AppCompatActivity {
     private Button setup;
     private TextView login;
     private String password;
+    private EditText name;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+
+
         email = (EditText)findViewById(R.id.editTextEmail);
         pass1 = (EditText)findViewById(R.id.editTextPassword1);
         pass2 = (EditText)findViewById(R.id.editTextPassword2);
         login = (TextView)findViewById(R.id.textViewLogin);
+        name = (EditText)findViewById(R.id.editTextName);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,13 +57,31 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(pass1.getText().toString().equals(pass2.getText().toString())){
-                    //isValidEmail(email.getText().toString());
-                    //Send user email to verify
-                    //Can add usernames later
                     password = pass1.getText().toString();
+
+                    if(TextUtils.isEmpty(email.getText().toString())){
+                        Toast.makeText(ProfileActivity.this,"Email cannot be empty", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if(TextUtils.isEmpty(password)){
+                        Toast.makeText(ProfileActivity.this,"Password cannot be empty", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if(TextUtils.isEmpty(name.getText().toString())){
+                        Toast.makeText(ProfileActivity.this, "Who are you??", Toast.LENGTH_SHORT).show();
+                    }
+
+                    registerUser(email.getText().toString(), name.getText().toString(), password);
+
                 }
             }
         });
+    }
+
+    private void registerUser(String email, String name, String password){
+
     }
 
 
