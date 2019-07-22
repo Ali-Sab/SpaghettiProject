@@ -15,6 +15,7 @@ import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 
 import org.w3c.dom.Text;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
@@ -91,7 +92,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void registerUser(String email, String name, String password){
-        compositeDisposable.add(iMyService.loginUser(email,password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers).subscribeOn(new Consumer<String>(){
+        compositeDisposable.add(iMyService.loginUser(email,password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeOn(new Consumer<String>(){
             @Override
             public void accept(String response) throws Exception{
                 Toast.makeText(ProfileActivity.this, ""+response,Toast.LENGTH_SHORT).show();
