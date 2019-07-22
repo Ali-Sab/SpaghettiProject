@@ -16,6 +16,7 @@ import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 import org.w3c.dom.Text;
 
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -29,13 +30,22 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText name;
 
 
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    IMyService iMyService;
+
+    @Override
+    protected void onStop(){
+        compositeDisposable.clear();
+        super.onStop();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-
+        Retrofit retrofitClient = RetrofitClient.getInstance();
+        iMyService = retrofitClient.create(IMyService.class);
 
         email = (EditText)findViewById(R.id.editTextEmail);
         pass1 = (EditText)findViewById(R.id.editTextPassword1);
@@ -81,7 +91,12 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void registerUser(String email, String name, String password){
-
+        compositeDisposable.add(iMyService.loginUser(email,password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers).subscribeOn(new Consumer<String>(){
+            @Override
+            public void accept(String response) throws Exception{
+                Toast.makeText(ProfileActivity.this, ""+response,Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
 

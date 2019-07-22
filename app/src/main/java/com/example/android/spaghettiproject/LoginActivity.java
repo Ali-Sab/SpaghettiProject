@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
             public void accept(String response) throws Exception{
                 Toast.makeText(LoginActivity.this, ""+response,Toast.LENGTH_SHORT).show();
             }
-        }))
+        }));
     }
 
 
