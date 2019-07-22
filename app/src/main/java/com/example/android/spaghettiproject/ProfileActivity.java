@@ -1,6 +1,8 @@
 package com.example.android.spaghettiproject;
 
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,6 +16,8 @@ import com.example.android.spaghettiproject.Retrofit.IMyService;
 import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 
 import org.w3c.dom.Text;
+
+import java.util.function.Consumer;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -35,7 +39,7 @@ public class ProfileActivity extends AppCompatActivity {
     IMyService iMyService;
 
     @Override
-    protected void onStop(){
+    protected void onStop() {
         compositeDisposable.clear();
         super.onStop();
     }
@@ -48,11 +52,11 @@ public class ProfileActivity extends AppCompatActivity {
         Retrofit retrofitClient = RetrofitClient.getInstance();
         iMyService = retrofitClient.create(IMyService.class);
 
-        email = (EditText)findViewById(R.id.editTextEmail);
-        pass1 = (EditText)findViewById(R.id.editTextPassword1);
-        pass2 = (EditText)findViewById(R.id.editTextPassword2);
-        login = (TextView)findViewById(R.id.textViewLogin);
-        name = (EditText)findViewById(R.id.editTextName);
+        email = (EditText) findViewById(R.id.editTextEmail);
+        pass1 = (EditText) findViewById(R.id.editTextPassword1);
+        pass2 = (EditText) findViewById(R.id.editTextPassword2);
+        login = (TextView) findViewById(R.id.textViewLogin);
+        name = (EditText) findViewById(R.id.editTextName);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,25 +66,25 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        setup = (Button)findViewById(R.id.btnSetup);
+        setup = (Button) findViewById(R.id.btnSetup);
 
         setup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(pass1.getText().toString().equals(pass2.getText().toString())){
+                if (pass1.getText().toString().equals(pass2.getText().toString())) {
                     password = pass1.getText().toString();
 
-                    if(TextUtils.isEmpty(email.getText().toString())){
-                        Toast.makeText(ProfileActivity.this,"Email cannot be empty", Toast.LENGTH_SHORT).show();
+                    if (TextUtils.isEmpty(email.getText().toString())) {
+                        Toast.makeText(ProfileActivity.this, "Email cannot be empty", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    if(TextUtils.isEmpty(password)){
-                        Toast.makeText(ProfileActivity.this,"Password cannot be empty", Toast.LENGTH_SHORT).show();
+                    if (TextUtils.isEmpty(password)) {
+                        Toast.makeText(ProfileActivity.this, "Password cannot be empty", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    if(TextUtils.isEmpty(name.getText().toString())){
+                    if (TextUtils.isEmpty(name.getText().toString())) {
                         Toast.makeText(ProfileActivity.this, "Who are you??", Toast.LENGTH_SHORT).show();
                     }
 
@@ -91,11 +95,12 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void registerUser(String email, String name, String password){
-        compositeDisposable.add(iMyService.loginUser(email,password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeOn(new Consumer<String>(){
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void registerUser(String email, String name, String password) {
+        compositeDisposable.add(iMyService.loginUser(email, password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeOn(new Consumer<String>() {
             @Override
-            public void accept(String response) throws Exception{
-                Toast.makeText(ProfileActivity.this, ""+response,Toast.LENGTH_SHORT).show();
+            public void accept(String response) throws Exception {
+                Toast.makeText(ProfileActivity.this, "" + response, Toast.LENGTH_SHORT).show();
             }
         }));
     }

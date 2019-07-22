@@ -69,7 +69,7 @@ public class GroupsActivity extends AppCompatActivity {
             case R.id.action_log_out:
                 Intent intent = new Intent(GroupsActivity.this,
                         LoginActivity.class);
-                Toast.makeText(this,"Successfully logged out", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Successfully logged out", Toast.LENGTH_LONG).show();
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();

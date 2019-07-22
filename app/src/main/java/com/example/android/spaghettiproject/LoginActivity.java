@@ -18,6 +18,8 @@ import android.widget.Toast;
 import com.example.android.spaghettiproject.Retrofit.IMyService;
 import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 
+import java.util.function.Consumer;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -34,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     IMyService iMyService;
 
     @Override
-    protected void onStop(){
+    protected void onStop() {
         compositeDisposable.clear();
         super.onStop();
     }
@@ -49,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         Retrofit retrofitClient = RetrofitClient.getInstance();
         iMyService = retrofitClient.create(IMyService.class);
 
-        if( getIntent().getBooleanExtra("Exit me", false)) {
+        if (getIntent().getBooleanExtra("Exit me", false)) {
             finish();
             return;
         }
@@ -57,31 +59,31 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        user = (EditText)findViewById(R.id.editTextUser);
-        password = (EditText)findViewById(R.id.editTextPassword);
+        user = (EditText) findViewById(R.id.editTextUser);
+        password = (EditText) findViewById(R.id.editTextPassword);
         login = (Button) findViewById(R.id.btnLogin);
-        loginText = (TextView)findViewById(R.id.textViewLogin);
-
+        loginText = (TextView) findViewById(R.id.textViewLogin);
 
 
     }
 
 
-    private void loginUser(String email, String password){
-        if(TextUtils.isEmpty(email)){
-            Toast.makeText(this,"Email cannot be empty", Toast.LENGTH_SHORT).show();
+    private void loginUser(String email, String password) {
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(this, "Email cannot be empty", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if(TextUtils.isEmpty(password)){
-            Toast.makeText(this,"Password cannot be empty", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(password)) {
+            Toast.makeText(this, "Password cannot be empty", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        compositeDisposable.add(iMyService.loginUser(email,password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeOn(new Consumer<String>(){
+        compositeDisposable.add(iMyService.loginUser(email, password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeOn(new Consumer<String>() {
             @Override
-            public void accept(String response) throws Exception{
-                Toast.makeText(LoginActivity.this, ""+response,Toast.LENGTH_SHORT).show();
+            public void accept(String response) throws Exception {
+                Toast.makeText(LoginActivity.this, "" + response, Toast.LENGTH_SHORT).show();
+
             }
         }));
     }
@@ -129,7 +131,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(profileIntent);
     }
 
-    public void keepLoggedIn(View view){
+    public void keepLoggedIn(View view) {
 
     }
 }
