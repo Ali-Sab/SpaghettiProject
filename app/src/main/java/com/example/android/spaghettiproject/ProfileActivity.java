@@ -1,6 +1,7 @@
 package com.example.android.spaghettiproject;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -34,15 +35,7 @@ public class ProfileActivity extends AppCompatActivity {
     private String password;
     private EditText name;
 
-
-    CompositeDisposable compositeDisposable = new CompositeDisposable();
     IMyService iMyService;
-
-    @Override
-    protected void onStop() {
-        compositeDisposable.clear();
-        super.onStop();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,22 +81,14 @@ public class ProfileActivity extends AppCompatActivity {
                         Toast.makeText(ProfileActivity.this, "Who are you??", Toast.LENGTH_SHORT).show();
                     }
 
-                    registerUser(email.getText().toString(), name.getText().toString(), password);
+
 
                 }
             }
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void registerUser(String email, String name, String password) {
-        compositeDisposable.add(iMyService.loginUser(email, password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeOn(new Consumer<String>() {
-            @Override
-            public void accept(String response) throws Exception {
-                Toast.makeText(ProfileActivity.this, "" + response, Toast.LENGTH_SHORT).show();
-            }
-        }));
-    }
+
 
 
     public void onClick(View view) {
