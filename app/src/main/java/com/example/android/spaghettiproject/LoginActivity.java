@@ -1,14 +1,11 @@
 package com.example.android.spaghettiproject;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,11 +15,6 @@ import android.widget.Toast;
 import com.example.android.spaghettiproject.Retrofit.IMyService;
 import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 
-import java.util.function.Consumer;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
@@ -99,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         //Run below only if user account and password matches
+        new ServerActivity(user, password).execute(user.toString());
         Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
         startActivity(intent);
     }

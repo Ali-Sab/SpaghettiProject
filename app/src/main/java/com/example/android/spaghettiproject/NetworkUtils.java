@@ -1,4 +1,4 @@
-package com.example.android.spaghettiproject.Server;
+package com.example.android.spaghettiproject;
 
 import android.net.Uri;
 import android.util.Log;

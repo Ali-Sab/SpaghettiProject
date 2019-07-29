@@ -1,9 +1,7 @@
-package com.example.android.spaghettiproject.Server;
+package com.example.android.spaghettiproject;
 
 import android.os.AsyncTask;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
 
@@ -22,9 +20,14 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
         this.password = new WeakReference<>(password);
     }
 
+    ServerActivity(TextView email, TextView password){
+        this.email = new WeakReference<>(email);
+        this.password = new WeakReference<>(password);
+    }
+
     @Override
     protected String doInBackground(String... strings) {
-        return null;
+        return NetworkUtils.getInfo(strings[0]);
     }
 
     @Override
