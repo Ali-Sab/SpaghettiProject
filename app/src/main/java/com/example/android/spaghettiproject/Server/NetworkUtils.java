@@ -1,6 +1,7 @@
 package com.example.android.spaghettiproject.Server;
 
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -51,18 +52,33 @@ public class NetworkUtils {
                 builder.append("\n");
             }
 
+            //May be in wrong spot
             if(builder.length() == 0){
                 //Stream was empy. No point in parsing
                 return null;
             }
+
+            //May be in wrong spot
+            JSONString = builder.toString();
 
 
         }catch(IOException e){
             e.printStackTrace();
         }finally{
             //
+            if(urlConnection != null){
+                urlConnection.disconnect();
+            }
+            if(reader !=null){
+                try{
+                    reader.close();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+            }
         }
 
+        Log.d(LOG_TAG, JSONString);
         return JSONString;
     }
 
