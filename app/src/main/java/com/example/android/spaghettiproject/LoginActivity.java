@@ -1,14 +1,12 @@
 package com.example.android.spaghettiproject;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,11 +16,6 @@ import android.widget.Toast;
 import com.example.android.spaghettiproject.Retrofit.IMyService;
 import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 
-import java.util.function.Consumer;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
@@ -32,14 +25,9 @@ public class LoginActivity extends AppCompatActivity {
     private Button login;
     private TextView loginText;
 
-    CompositeDisposable compositeDisposable = new CompositeDisposable();
+
     IMyService iMyService;
 
-    @Override
-    protected void onStop() {
-        compositeDisposable.clear();
-        super.onStop();
-    }
 
 
     @Override
@@ -68,25 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void loginUser(String email, String password) {
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "Email cannot be empty", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        if (TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "Password cannot be empty", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        compositeDisposable.add(iMyService.loginUser(email, password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeOn(new Consumer<String>() {
-            @Override
-            public void accept(String response) throws Exception {
-                Toast.makeText(LoginActivity.this, "" + response, Toast.LENGTH_SHORT).show();
-
-            }
-        }));
-    }
 
 
     @Override
@@ -122,8 +92,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         //Run below only if user account and password matches
-        Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
-        startActivity(intent);
+        new ServerActivity(user, password).execute(user.toString());
     }
 
     public void goToProfile(View view) {
@@ -134,4 +103,5 @@ public class LoginActivity extends AppCompatActivity {
     public void keepLoggedIn(View view) {
 
     }
+
 }
