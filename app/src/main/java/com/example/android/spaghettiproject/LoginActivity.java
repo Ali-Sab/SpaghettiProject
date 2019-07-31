@@ -32,12 +32,12 @@ public class LoginActivity extends AppCompatActivity {
     private Button login;
     private TextView loginText;
 
-    CompositeDisposable compositeDisposable = new CompositeDisposable();
+
     IMyService iMyService;
 
     @Override
     protected void onStop() {
-        compositeDisposable.clear();
+
         super.onStop();
     }
 
@@ -79,13 +79,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        compositeDisposable.add(iMyService.loginUser(email, password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeOn(new Consumer<String>() {
-            @Override
-            public void accept(String response) throws Exception {
-                Toast.makeText(LoginActivity.this, "" + response, Toast.LENGTH_SHORT).show();
 
-            }
-        }));
     }
 
 
