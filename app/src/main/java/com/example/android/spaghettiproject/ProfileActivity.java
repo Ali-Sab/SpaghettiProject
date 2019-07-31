@@ -35,12 +35,12 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText name;
 
 
-
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
     IMyService iMyService;
 
     @Override
     protected void onStop() {
-
+        compositeDisposable.clear();
         super.onStop();
     }
 
@@ -97,10 +97,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void registerUser(String email, String name, String password) {
-
-                Toast.makeText(ProfileActivity.this, "", Toast.LENGTH_SHORT).show();
-
-
+        compositeDisposable.add(iMyService.loginUser(email, password).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeOn(new Consumer<String>() {
+            @Override
+            public void accept(String response) throws Exception {
+                Toast.makeText(ProfileActivity.this, "" + response, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
 
