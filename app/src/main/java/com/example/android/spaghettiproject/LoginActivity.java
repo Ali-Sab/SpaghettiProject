@@ -1,5 +1,6 @@
 package com.example.android.spaghettiproject;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -92,8 +93,6 @@ public class LoginActivity extends AppCompatActivity {
     public void onClick(View view) {
         //Run below only if user account and password matches
         new ServerActivity(user, password).execute(user.toString());
-        Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
-        startActivity(intent);
     }
 
     public void goToProfile(View view) {
@@ -104,4 +103,5 @@ public class LoginActivity extends AppCompatActivity {
     public void keepLoggedIn(View view) {
 
     }
+
 }

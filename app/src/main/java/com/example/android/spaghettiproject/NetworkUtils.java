@@ -50,16 +50,19 @@ public class NetworkUtils {
                 builder.append(line);
                 //
                 builder.append("\n");
-            }
 
-            //May be in wrong spot
-            if(builder.length() == 0){
-                //Stream was empy. No point in parsing
-                return null;
+                //May be in wrong spot
+                if(builder.length() == 0){
+                    //Stream was empty. No point in parsing
+                    return null;
+                }
+
+
             }
 
             //May be in wrong spot
             JSONString = builder.toString();
+            JSONString = "hi";
 
 
         }catch(IOException e){
@@ -78,7 +81,7 @@ public class NetworkUtils {
             }
         }
 
-        Log.d(LOG_TAG, JSONString);
+        Log.d(LOG_TAG, "hi");
         return JSONString;
     }
 
