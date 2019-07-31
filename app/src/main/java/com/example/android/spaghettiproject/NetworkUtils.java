@@ -7,20 +7,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import javax.net.ssl.HttpsURLConnection;
 
 public class NetworkUtils {
 
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
     //URL
-    private static final String URL = "ourURLToAccess";
+    private static final String URL = "https://spaghetti-project.herokuapp.com/register";
 
 
     static String getInfo(String queryString){
 
-        HttpURLConnection urlConnection = null;
+        HttpsURLConnection urlConnection = null;
         BufferedReader reader = null;
         String JSONString = null; //Not sure about this one
 
@@ -32,7 +32,7 @@ public class NetworkUtils {
             URL requestURL = new URL(builtURI.toString());
 
             //Open URL connection
-            urlConnection = (HttpURLConnection) requestURL.openConnection();
+            urlConnection = (HttpsURLConnection) requestURL.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
@@ -62,8 +62,6 @@ public class NetworkUtils {
 
             //May be in wrong spot
             JSONString = builder.toString();
-            JSONString = "hi";
-
 
         }catch(IOException e){
             e.printStackTrace();
@@ -81,7 +79,7 @@ public class NetworkUtils {
             }
         }
 
-        Log.d(LOG_TAG, "hi");
+        Log.d(LOG_TAG, JSONString);
         return JSONString;
     }
 
