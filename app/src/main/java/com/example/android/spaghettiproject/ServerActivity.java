@@ -3,6 +3,7 @@ package com.example.android.spaghettiproject;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -10,30 +11,39 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.net.URLEncoder;
 
 public class ServerActivity extends AsyncTask<String, Void, String> {
 
 
-    private WeakReference<TextView> user;
-    private WeakReference<TextView> name;
-    private WeakReference<TextView> password;
+    private String user;
+    private String name;
+    private String password;
 
 
-    ServerActivity(TextView email, TextView name, TextView password) {
-        this.user = new WeakReference<>(email);
-        this.name = new WeakReference<>(name);
-        this.password = new WeakReference<>(password);
+    ServerActivity(String email, String name, String password) {
+        this.user = email;
+        this.name = name;
+        this.password = password;
     }
 
-    ServerActivity(TextView email, TextView password) {
-        this.user = new WeakReference<>(email);
-        this.password = new WeakReference<>(password);
+    ServerActivity(String email, String password) {
+        this.user = email;
+        this.password = password;
     }
 
     @Override
     protected String doInBackground(String... strings) {
-        return NetworkUtils.getInfo(strings[0]);
+        String urlParams = "ERROR";
+        try {
+            urlParams = "email=" + URLEncoder.encode(user.toString(), "UTF-8") + "&name=" + URLEncoder.encode(name.toString(), "UTF-8") + "&password=" + URLEncoder.encode(password.toString(), "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+            Log.d("error exception occurred", e.toString());
+        }
+        return NetworkUtils.getInfo(urlParams);
     }
 
     @Override
@@ -71,18 +81,18 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
             //If both found, then good but if not found, reset
             if (email != null && password != null) {
                 //change to groups activity
-                user.get().setText("works");
-                password.get().setText("works");
+//                user.get().setText("works");
+//                password.get().setText("works");
 
             }else{
-                user.get().setText("");
-                password.get().setText("");
-                //Toast.makeText(this,"Incorrect email or password", Toast.LENGTH_LONG).show();
+//                user.get().setText("");
+//                password.get().setText("");
+//                Toast.makeText(this,"Incorrect email or password", Toast.LENGTH_LONG).show();
             }
 
         } catch (JSONException e) {//may need to change to exception
-            user.get().setText("");
-            password.get().setText("");
+//            user.get().setText("");
+//            password.get().setText("");
             e.printStackTrace();
         }
     }

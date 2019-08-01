@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         //Run below only if user account and password matches
-        new ServerActivity(user, password).execute(user.toString());
+        new ServerActivity(user.getText().toString(), password.getText().toString()).execute(user.toString());
     }
 
     public void goToProfile(View view) {

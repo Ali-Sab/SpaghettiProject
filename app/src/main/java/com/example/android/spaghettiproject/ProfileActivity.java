@@ -78,17 +78,17 @@ public class ProfileActivity extends AppCompatActivity {
                     }
 
                     if (TextUtils.isEmpty(name.getText().toString())) {
-                        Toast.makeText(ProfileActivity.this, "Who are you??", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, "Please enter a name", Toast.LENGTH_SHORT).show();
+                        return;
                     }
 
-
+                    //Run below only if user account and password matches
+                    new ServerActivity(email.getText().toString(), name.getText().toString(), pass1.getText().toString()).execute(name.getText().toString());
 
                 }
             }
         });
     }
-
-
 
 
     public void onClick(View view) {
