@@ -11,23 +11,20 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-
 import javax.net.ssl.HttpsURLConnection;
+
 
 public class NetworkUtils {
 
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
     //URL
-    private static String URL = "https://spaghetti-project.herokuapp.com/register";
-
+    private static final String URL = "https://spaghetti-project.herokuapp.com/register";
 
     static String getInfo(String urlParameters){
 
-        HttpsURLConnection conn = null;
+        HttpsURLConnection conn = null
         BufferedReader reader = null;
         String JSONString = null; //Not sure about this one
 
@@ -119,7 +116,7 @@ public class NetworkUtils {
             }
         }
 
-        Log.d(LOG_TAG, "hi");
+        Log.d(LOG_TAG, JSONString);
         return JSONString;
     }
 
