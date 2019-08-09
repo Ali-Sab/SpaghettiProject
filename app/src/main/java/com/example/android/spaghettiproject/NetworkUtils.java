@@ -1,5 +1,6 @@
 package com.example.android.spaghettiproject;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -20,19 +21,24 @@ public class NetworkUtils {
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
     //URL
-    private static final String URL = "https://spaghetti-project.herokuapp.com/register";
+    private static final String URL = "https://spaghetti-project.herokuapp.com/";
 
-    static String getInfo(String urlParameters){
+    static String getInfo(String activityName, String urlParameters){
+        String requestURL = URL;
+        if (activityName.equals("ProfileActivity"))
+            requestURL += "register";
+        else if (activityName.equals("LoginActivity")) {
+            requestURL += "login";
+        }
 
-        HttpsURLConnection conn = null
+        HttpsURLConnection conn = null;
         BufferedReader reader = null;
-        String JSONString = null; //Not sure about this one
+        String response = null;
 
         try{
             //byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
             //int postDataLength = postData.length;
-            String request = URL+urlParameters;
-            URL url = new URL(URL);
+            URL url = new URL(requestURL);
 
             conn = (HttpsURLConnection) url.openConnection();
             conn.setDoOutput(true);
@@ -54,10 +60,10 @@ public class NetworkUtils {
             Log.d(LOG_TAG, conn.getResponseMessage());
 //            Log.d(LOG_TAG, "getContent()=" + conn.getContent().toString());
             BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String response = "";
+            response = "";
             String lineRead = input.readLine();
             while (lineRead != null) {
-                response+=(lineRead);
+                response += (lineRead);
                 lineRead = input.readLine();
             }
 
@@ -116,8 +122,7 @@ public class NetworkUtils {
             }
         }
 
-        Log.d(LOG_TAG, JSONString);
-        return JSONString;
+        return response;
     }
 
 

@@ -83,7 +83,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
 
                     //Run below only if user account and password matches
-                    new ServerActivity(email.getText().toString(), name.getText().toString(), pass1.getText().toString()).execute(name.getText().toString());
+                    new ServerActivity(ProfileActivity.this, email.getText().toString(), name.getText().toString(), pass1.getText().toString()).execute(name.getText().toString());
 
                 }
             }
