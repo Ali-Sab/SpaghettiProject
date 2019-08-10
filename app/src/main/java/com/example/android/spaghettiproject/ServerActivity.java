@@ -1,51 +1,54 @@
 package com.example.android.spaghettiproject;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 
 public class ServerActivity extends AsyncTask<String, Void, String> {
 
-
-    private String email = null;
+    private String email;
     private String name = null;
-    private String password = null;
-    private Context context;
+    private String password;
+    private WeakReference<Context> context;
     private Boolean isMissingEmail = false;
     private Boolean isMissingPassword = false;
     private Boolean isMissingName = false;
+    private WeakReference<ProgressBar> progressBar;
 
-
-    ServerActivity(@NonNull Context context, String email, String name, String password) {
-        this.context = context;
+    ServerActivity(@NonNull Context context, String email, String name, String password, ProgressBar progressBar) {
+        this.context = new WeakReference<>(context);
         this.email = email;
         this.name = name;
         this.password = password;
+        this.progressBar = new WeakReference<> (progressBar);
     }
 
-    ServerActivity(Context context, String email, String password) {
-        this.context = context;
+    ServerActivity(Context context, String email, String password, ProgressBar progressBar) {
+        this.context = new WeakReference<>(context);
         this.email = email;
         this.password = password;
+        this.progressBar = new WeakReference<> (progressBar);
     }
 
     @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        progressBar.get().setVisibility(View.VISIBLE);
+    }
+
+
+    @Override
     protected String doInBackground(String... strings) {
-        String urlParams = "ERROR";
+
+        String urlParams;
         try {
             if (email.isEmpty()) {
                 isMissingEmail = true;
@@ -53,15 +56,15 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
             } else if (password.isEmpty()) {
                 isMissingPassword = true;
                 return null;
-            } else if (context.getClass().getSimpleName() == "ProfileActivity" && name.isEmpty()) {
+            } else if (context.getClass().getSimpleName().equals("ProfileActivity") && name.isEmpty()) {
                 isMissingName = true;
                 return null;
             }
 
-            if (context.getClass().getSimpleName() == "ProfileActivity")
-                urlParams = "email=" + URLEncoder.encode(email.toString(), "UTF-8") + "&name=" + URLEncoder.encode(name.toString(), "UTF-8") + "&password=" + URLEncoder.encode(password.toString(), "UTF-8");
+            if (context.get().getClass().getSimpleName().equals("ProfileActivity"))
+                urlParams = "email=" + URLEncoder.encode(email, "UTF-8") + "&name=" + URLEncoder.encode(name, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");
             else
-                urlParams = "email=" + URLEncoder.encode(email.toString(), "UTF-8") + "&password=" + URLEncoder.encode(password.toString(), "UTF-8");
+                urlParams = "email=" + URLEncoder.encode(email, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");
         }
         catch (UnsupportedEncodingException e) {
             Log.d("Error", e.toString());
@@ -71,18 +74,19 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
             e.printStackTrace();
             return null;
         }
-        return NetworkUtils.getInfo(context.getClass().getSimpleName(), urlParams);
+        return NetworkUtils.getInfo(context.get().getClass().getSimpleName(), urlParams);
     }
 
     @Override
     protected void onPostExecute(String response) {
         super.onPostExecute(response);
-        if (isMissingEmail == true)
-            Toast.makeText(context, "Please enter your email", Toast.LENGTH_LONG).show();
-        else if (isMissingPassword == true)
-            Toast.makeText(context, "Please enter your password", Toast.LENGTH_LONG).show();
-        else if (isMissingName == true)
-            Toast.makeText(context, "Please enter your name", Toast.LENGTH_LONG).show();
+        progressBar.get().setVisibility(View.GONE);
+        if (isMissingEmail)
+            Toast.makeText(context.get(), "Please enter your email", Toast.LENGTH_LONG).show();
+        else if (isMissingPassword)
+            Toast.makeText(context.get(), "Please enter your password", Toast.LENGTH_LONG).show();
+        else if (isMissingName)
+            Toast.makeText(context.get(), "Please enter your name", Toast.LENGTH_LONG).show();
 //        try {
 //            JSONObject jsonObject = new JSONObject(s);
 //            JSONArray itemsArray = jsonObject.getJSONArray("items");
@@ -128,29 +132,50 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
 //            e.printStackTrace();
 //        }
         if (response != null) {
-            String responseCheck = response.substring(1, response.length() - 1);
-            if (responseCheck.equals("Email does not exist")) {
-                new AlertDialog.Builder(context)
-                        .setTitle("Login Error")
-                        .setMessage("Email does not exist.")
-                        .setNegativeButton(android.R.string.ok, null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-            } else if (responseCheck.equals("Wrong password")) {
-                new AlertDialog.Builder(context)
-                        .setTitle("Login Error")
-                        .setMessage("Password is incorrect.")
-                        .setNegativeButton(android.R.string.ok, null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-            } else if (responseCheck.equals("Login Success")) {
-                new AlertDialog.Builder(context)
-                        .setTitle("Title")
-                        .setMessage("Message")
-                        .setNegativeButton(android.R.string.ok, null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
+            if (context.get().getClass().getSimpleName().equals("LoginActivity")) {
+                String responseCheck = response.substring(1, response.length() - 1);
+                if (responseCheck.equals("Email does not exist")) {
+                    new AlertDialog.Builder(context.get())
+                            .setTitle("Login Error")
+                            .setMessage("Email does not exist.")
+                            .setNegativeButton(android.R.string.ok, null)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                } else if (responseCheck.equals("Wrong password")) {
+                    new AlertDialog.Builder(context.get())
+                            .setTitle("Login Error")
+                            .setMessage("Password is incorrect.")
+                            .setNegativeButton(android.R.string.ok, null)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                } else if (responseCheck.equals("Login Success")) {
+                    new AlertDialog.Builder(context.get())
+                            .setTitle("Success!")
+                            .setMessage("You're now logged in")
+                            .setNegativeButton(android.R.string.ok, null)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+            } else if (context.get().getClass().getSimpleName().equals("ProfileActivity")) {
+                String responseCheck = response.substring(1, response.length() - 1);
+                System.out.println(response);
+                if (responseCheck.equals("Email already exists")) {
+                    new AlertDialog.Builder(context.get())
+                            .setTitle("Registration Error")
+                            .setMessage("Email already exists")
+                            .setNegativeButton(android.R.string.ok, null)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                } else if (responseCheck.equals("Registration successful")) {
+                    new AlertDialog.Builder(context.get())
+                            .setTitle("Success!")
+                            .setMessage("Account created successfully")
+                            .setNegativeButton(android.R.string.ok, null)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
             }
+            System.out.println(response+"afjslak");
         }
     }
 

@@ -19,4 +19,12 @@
     <string name="contact_text">Please send us an email if you have questions and feedback! We are eager to improve the quality of our app, and in order to do so, your issues will assist us greatly.
 
     email@mail.ca</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="name">Name</string>
+    <string name="spaghetti_login">Spaghetti Login</string>
+    <string name="register_new">Don\'t have an account? Click here.</string>
+    <string name="register_account">Register Account</string>
+    <string name="register">Register</string>
+    <string name="confirm_password">Confirm Password</string>
 </resources>

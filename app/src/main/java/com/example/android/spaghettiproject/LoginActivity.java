@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText password;
     private Button login;
     private TextView loginText;
+    private ProgressBar progressBar;
 
 
     IMyService iMyService;
@@ -54,8 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         password = (EditText) findViewById(R.id.editTextPassword);
         login = (Button) findViewById(R.id.btnLogin);
         loginText = (TextView) findViewById(R.id.textViewLogin);
-
-
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
     }
 
 
@@ -92,8 +93,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         //Run below only if user account and password matches
-
-        new ServerActivity(LoginActivity.this, user.getText().toString(), password.getText().toString()).execute();
+        new ServerActivity(LoginActivity.this, user.getText().toString(), password.getText().toString(), progressBar).execute();
     }
 
     public void goToProfile(View view) {

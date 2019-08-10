@@ -71,7 +71,6 @@ public class NetworkUtils {
 
             Log.d(LOG_TAG, "response:\n" + response);
 
-
 //            //build request URI
 //            Uri builtURI = Uri.parse(URL).buildUpon().build();
 //
