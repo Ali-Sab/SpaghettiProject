@@ -75,14 +75,14 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
                 password.get().setText("works");
 
             }else{
-                user.get().setText("");
-                password.get().setText("");
+                user.get().setText("s");
+                password.get().setText("s");
                 //Toast.makeText(this,"Incorrect email or password", Toast.LENGTH_LONG).show();
             }
 
         } catch (JSONException e) {//may need to change to exception
-            user.get().setText("");
-            password.get().setText("");
+            user.get().setText("d");
+            password.get().setText("d");
             e.printStackTrace();
         }
     }
