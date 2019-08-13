@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.spaghettiproject">
 
+    <!-- To access Google+ APIs: -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -14,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ContactUsActivity"></activity>
+        <activity android:name=".ContactUsActivity" />
         <activity android:name=".ProfileActivity" />
         <activity
             android:name=".ListsActivity"
@@ -26,14 +27,13 @@
         </activity>
         <activity
             android:name=".GroupsActivity"
-            android:label="@string/title_activity_groups"></activity>
+            android:label="@string/title_activity_groups" />
         <activity
             android:name=".LoginActivity"
             android:label="Login"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
