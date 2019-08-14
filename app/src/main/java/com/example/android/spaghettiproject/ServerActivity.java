@@ -78,17 +78,6 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
         return NetworkUtils.getInfo(context.get().getClass().getSimpleName(), urlParams);
     }
 
-<<<<<<< HEAD
-            }else{
-                user.get().setText("s");
-                password.get().setText("s");
-                //Toast.makeText(this,"Incorrect email or password", Toast.LENGTH_LONG).show();
-||||||| merged common ancestors
-            }else{
-                user.get().setText("");
-                password.get().setText("");
-                //Toast.makeText(this,"Incorrect email or password", Toast.LENGTH_LONG).show();
-=======
     @Override
     protected void onPostExecute(String response) {
         super.onPostExecute(response);
@@ -186,23 +175,8 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
                 }
->>>>>>> ea1d8e1e3dbec00fb4114508b60e568baa0da7c6
             }
-<<<<<<< HEAD
-
-        } catch (JSONException e) {//may need to change to exception
-            user.get().setText("d");
-            password.get().setText("d");
-            e.printStackTrace();
-||||||| merged common ancestors
-
-        } catch (JSONException e) {//may need to change to exception
-            user.get().setText("");
-            password.get().setText("");
-            e.printStackTrace();
-=======
             System.out.println(response+"afjslak");
->>>>>>> ea1d8e1e3dbec00fb4114508b60e568baa0da7c6
         }
     }
 
