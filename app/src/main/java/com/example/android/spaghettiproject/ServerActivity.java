@@ -22,7 +22,6 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
     private Boolean isMissingPassword = false;
     private Boolean isMissingName = false;
     private WeakReference<ProgressBar> progressBar;
-    public static final String ARG_RESPONSE = "https_response";
 
     ServerActivity(@NonNull Context context, String email, String name, String password, ProgressBar progressBar) {
         this.context = new WeakReference<>(context);
