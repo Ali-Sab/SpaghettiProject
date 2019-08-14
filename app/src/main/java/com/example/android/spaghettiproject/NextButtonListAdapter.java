@@ -37,7 +37,7 @@ public class NextButtonListAdapter extends RecyclerView.Adapter<NextButtonListAd
             String element = mGroupList.get(mPosition);
 
             Intent intent;
-            if (this.getClass().getSimpleName() == "GroupsActivity.class")
+            if (this.getClass().getSimpleName().equals("GroupsActivity"))
                 intent = new Intent(v.getContext(), ListsActivity.class);
             else
                 intent = new Intent(v.getContext(), ListsActivity.class);

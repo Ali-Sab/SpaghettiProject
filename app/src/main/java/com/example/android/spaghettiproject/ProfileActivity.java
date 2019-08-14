@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView login;
     private String password;
     private EditText name;
+    private ProgressBar progressBar;
 
     IMyService iMyService;
 
@@ -50,6 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
         pass2 = (EditText) findViewById(R.id.editTextPassword2);
         login = (TextView) findViewById(R.id.textViewLogin);
         name = (EditText) findViewById(R.id.editTextName);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,17 +81,17 @@ public class ProfileActivity extends AppCompatActivity {
                     }
 
                     if (TextUtils.isEmpty(name.getText().toString())) {
-                        Toast.makeText(ProfileActivity.this, "Who are you??", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, "Please enter a name", Toast.LENGTH_SHORT).show();
+                        return;
                     }
 
-
+                    //Run below only if user account and password matches
+                    new ServerActivity(ProfileActivity.this, email.getText().toString(), name.getText().toString(), pass1.getText().toString(), progressBar).execute(name.getText().toString());
 
                 }
             }
         });
     }
-
-
 
 
     public void onClick(View view) {
