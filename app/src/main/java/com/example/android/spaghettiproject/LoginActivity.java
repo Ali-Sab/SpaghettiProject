@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +13,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,10 +37,27 @@ public class LoginActivity extends AppCompatActivity {
 
     IMyService iMyService;
 
+    //Animation
+    ConstraintLayout constraintLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        constraintLayout = new ConstraintLayout(this);
+
+        ImageView i = new ImageView(this);
+        i.setImageResource(R.drawable.checkmark640000);
+        i.setContentDescription(getResources().getString(R.string.login));
+
+        i.setAdjustViewBounds(true);
+        i.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        constraintLayout.addView(i);
+
+
+
         setContentView(R.layout.activity_login);
 
         //Initialize Service
