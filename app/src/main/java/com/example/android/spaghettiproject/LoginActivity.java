@@ -1,7 +1,9 @@
 package com.example.android.spaghettiproject;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.ActivityInfo;
@@ -21,9 +23,9 @@ import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 
 import retrofit2.Retrofit;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements ServerActivity.AsyncResponse {
 
-    private EditText user;
+    private EditText email;
     private EditText password;
     private Button login;
     private TextView loginText;
@@ -51,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        user = (EditText) findViewById(R.id.editTextUser);
+        email = (EditText) findViewById(R.id.editTextEmail);
         password = (EditText) findViewById(R.id.editTextPassword);
         login = (Button) findViewById(R.id.btnLogin);
         loginText = (TextView) findViewById(R.id.textViewLogin);
@@ -92,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         //Run below only if user account and password matches
-        new ServerActivity(LoginActivity.this, user.getText().toString(), password.getText().toString(), progressBar).execute();
+        new ServerActivity(LoginActivity.this, email.getText().toString(), password.getText().toString(), progressBar).execute();
     }
 
     public void goToProfile(View view) {
@@ -101,7 +103,51 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void keepLoggedIn(View view) {
+    }
 
+    @Override
+    public void processFinish(String output) {
+        switch (output) {
+            case "success":
+                new AlertDialog.Builder(LoginActivity.this)
+                        .setTitle("Success!")
+                        .setMessage("You're now logged in")
+                        .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.putExtra("email", email.getText().toString());
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                break;
+            case "missing email":
+                Toast.makeText(LoginActivity.this, "Please enter your email", Toast.LENGTH_LONG).show();
+                break;
+            case "missing password":
+                Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_LONG).show();
+                break;
+            case "wrong password":
+                new AlertDialog.Builder(LoginActivity.this)
+                        .setTitle("Login Error")
+                        .setMessage("Password is incorrect.")
+                        .setNegativeButton(android.R.string.ok, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                break;
+            case "wrong email":
+                new AlertDialog.Builder(LoginActivity.this)
+                        .setTitle("Login Error")
+                        .setMessage("Email does not exist.")
+                        .setNegativeButton(android.R.string.ok, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                break;
+        }
     }
 }
 

@@ -37,7 +37,7 @@
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
     <EditText
-        android:id="@+id/editTextUser"
+        android:id="@+id/editTextEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -45,8 +45,8 @@
         android:layout_marginBottom="8dp"
         android:autofillHints=".AUTOFILL_HINT_USERNAME"
         android:ems="10"
-        android:hint="email/username"
-        android:inputType="textPersonName"
+        android:hint="email"
+        android:inputType="textEmailAddress"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +68,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextUser"
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
         app:layout_constraintVertical_bias="0.139" />
 
     <Button
@@ -95,7 +95,7 @@
         android:gravity="center"
         android:text="@string/spaghetti_login"
         android:textSize="32sp"
-        app:layout_constraintBottom_toTopOf="@+id/editTextUser"
+        app:layout_constraintBottom_toTopOf="@+id/editTextEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
