@@ -2,8 +2,8 @@ package com.example.android.spaghettiproject;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -176,7 +176,6 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
                             .show();
                 }
             }
-            System.out.println(response+"afjslak");
         }
     }
 
