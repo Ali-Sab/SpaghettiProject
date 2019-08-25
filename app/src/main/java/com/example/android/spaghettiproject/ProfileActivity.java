@@ -1,10 +1,12 @@
 package com.example.android.spaghettiproject;
 
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -17,16 +19,9 @@ import android.widget.Toast;
 import com.example.android.spaghettiproject.Retrofit.IMyService;
 import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 
-import org.w3c.dom.Text;
-
-import java.util.function.Consumer;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements ServerActivity.AsyncResponse {
 
     private EditText email;
     private EditText pass1;
@@ -43,6 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
         Retrofit retrofitClient = RetrofitClient.getInstance();
         iMyService = retrofitClient.create(IMyService.class);
@@ -57,8 +53,7 @@ public class ProfileActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent loginIntent = new Intent(ProfileActivity.this, LoginActivity.class);
-                startActivity(loginIntent);
+                finish();
             }
         });
 
@@ -89,11 +84,46 @@ public class ProfileActivity extends AppCompatActivity {
                     new ServerActivity(ProfileActivity.this, email.getText().toString(), name.getText().toString(), pass1.getText().toString(), progressBar).execute(name.getText().toString());
 
                 }
+                else
+                    Toast.makeText(ProfileActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-
-    public void onClick(View view) {
+    @Override
+    public void processFinish(String output) {
+        switch (output) {
+            case "success":
+                new AlertDialog.Builder(ProfileActivity.this)
+                        .setTitle("Success!")
+                        .setMessage("Please login with your new account")
+                        .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                break;
+            case "email exists":
+                new AlertDialog.Builder(ProfileActivity.this)
+                        .setTitle("Registration Error")
+                        .setMessage("Email already exists")
+                        .setNegativeButton(android.R.string.ok, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                break;
+            case "missing email":
+                Toast.makeText(this, "Please enter your email", Toast.LENGTH_LONG).show();
+                break;
+            case "missing password":
+                Toast.makeText(this, "Please enter your password", Toast.LENGTH_LONG).show();
+                break;
+            case "missing name":
+                Toast.makeText(this, "Please enter your name", Toast.LENGTH_LONG).show();
+                break;
+        }
     }
+
 }
