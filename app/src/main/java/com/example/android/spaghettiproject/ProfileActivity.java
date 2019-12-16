@@ -57,8 +57,8 @@ public class ProfileActivity extends AppCompatActivity implements ServerActivity
             }
         });
 
+        //Registering once button pressed
         setup = (Button) findViewById(R.id.btnSetup);
-
         setup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
