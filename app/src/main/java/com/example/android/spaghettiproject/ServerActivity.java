@@ -22,6 +22,7 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
     private Boolean isMissingPassword = false;
     private Boolean isMissingName = false;
     private WeakReference<ProgressBar> progressBar;
+    private static String API_KEY = "TnqMS5BalKDYW6vE9gL80KrV1feGNhnq";
 
     public interface AsyncResponse {
         void processFinish(String output);
@@ -56,7 +57,7 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... strings) {
 
-        String urlParams;
+        String urlParams = "";
         try {
             if (email.isEmpty()) {
                 isMissingEmail = true;
@@ -70,9 +71,9 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
             }
 
             if (delegate.getClass().getSimpleName().equals("ProfileActivity"))
-                urlParams = "email=" + URLEncoder.encode(email, "UTF-8") + "&name=" + URLEncoder.encode(name, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");
-            else
-                urlParams = "email=" + URLEncoder.encode(email, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");
+                urlParams = "email=" + URLEncoder.encode(email, "UTF-8") + "&name=" + URLEncoder.encode(name, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&API_KEY=" + URLEncoder.encode(API_KEY, "UTF-8");
+            else if (delegate.getClass().getSimpleName().equals("LoginActivity"))
+                urlParams = "email=" + URLEncoder.encode(email, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&API_KEY=" + URLEncoder.encode(API_KEY, "UTF-8");
         }
         catch (UnsupportedEncodingException e) {
             Log.d("Error", e.toString());
