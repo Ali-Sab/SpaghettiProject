@@ -24,6 +24,8 @@ public class NetworkUtils {
     private static final String URL = "https://spaghetti-project.herokuapp.com/";
 
     static String getInfo(String activityName, String urlParameters){
+        if (urlParameters == null)
+            return "Params are empty";
         String requestURL = URL;
         if (activityName.equals("ProfileActivity"))
             requestURL += "register";
