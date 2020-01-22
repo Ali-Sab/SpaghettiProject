@@ -23,13 +23,14 @@ import android.widget.Toast;
 
 import com.example.android.spaghettiproject.Retrofit.IMyService;
 import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
+import com.google.android.material.textfield.TextInputEditText;
 
 import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity implements ServerActivity.AsyncResponse {
 
     private EditText email;
-    private EditText password;
+    private TextInputEditText password;
     private Button login;
     private TextView loginText;
     private ProgressBar progressBar;
@@ -38,14 +39,10 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
     IMyService iMyService;
 
     //Animation
-    ConstraintLayout constraintLayout;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        constraintLayout = new ConstraintLayout(this);
 
         ImageView i = new ImageView(this);
         i.setImageResource(R.drawable.checkmark640000);
@@ -53,8 +50,6 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
 
         i.setAdjustViewBounds(true);
         i.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        constraintLayout.addView(i);
 
 
 
@@ -74,7 +69,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
         setSupportActionBar(toolbar);
 
         email = (EditText) findViewById(R.id.editTextEmail);
-        password = (EditText) findViewById(R.id.editTextPassword);
+        password = (TextInputEditText) findViewById(R.id.editTextPassword);
         login = (Button) findViewById(R.id.btnLogin);
         loginText = (TextView) findViewById(R.id.textViewLogin);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -129,6 +124,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
     public void processFinish(String output) {
         switch (output) {
             case "success":
+                Toast.makeText(LoginActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
                 new AlertDialog.Builder(LoginActivity.this)
                         .setTitle("Success!")
                         .setMessage("You're now logged in")
