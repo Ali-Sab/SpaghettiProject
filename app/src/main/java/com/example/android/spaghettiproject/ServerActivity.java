@@ -39,6 +39,7 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
         this.progressBar = new WeakReference<> (progressBar);
     }
 
+    //Do we need a serveractivity given no name?
     ServerActivity(AsyncResponse delegate, String email, String password, ProgressBar progressBar) {
         this.delegate = delegate;
         //this.context = new WeakReference<>(context);

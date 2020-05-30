@@ -25,10 +25,9 @@ import com.example.android.spaghettiproject.Retrofit.IMyService;
 import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 import com.google.android.material.textfield.TextInputEditText;
 
-import retrofit2.Retrofit;
+//import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity implements ServerActivity.AsyncResponse {
-
     private EditText email;
     private TextInputEditText password;
     private Button login;
@@ -44,10 +43,10 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Setup for checkmark animation upon successful login
         ImageView i = new ImageView(this);
         i.setImageResource(R.drawable.checkmark640000);
         i.setContentDescription(getResources().getString(R.string.login));
-
         i.setAdjustViewBounds(true);
         i.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -57,8 +56,8 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
         //Initialize Service
-        Retrofit retrofitClient = RetrofitClient.getInstance();
-        iMyService = retrofitClient.create(IMyService.class);
+        //Retrofit  = RetrofitClient.getInstance();
+        //iMyService = retrofitClient.create(IMyService.class);
 
         if (getIntent().getBooleanExtra("Exit me", false)) {
             finish();
@@ -86,6 +85,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
     }
 
     @Override
+    //Once user selects the options menu
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.login_menu, menu);
@@ -93,22 +93,20 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
     }
 
     @Override
-
+    //Once an options menu is selected
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_contact:
-                Toast.makeText(this, "Make a contact us page", Toast.LENGTH_SHORT).show();
                 Intent contactIntent = new Intent(LoginActivity.this, ContactUsActivity.class);
                 startActivity(contactIntent);
                 return true;
             default:
-                // Do nothing
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     public void onClick(View view) {
-        //Run below only if user account and password matches
+        //Run below only if user account and password matches. Figure out how to check these with Alison?
         new ServerActivity(LoginActivity.this, email.getText().toString(), password.getText().toString(), progressBar).execute();
     }
 
@@ -128,7 +126,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
                 new AlertDialog.Builder(LoginActivity.this)
                         .setTitle("Success!")
                         .setMessage("You're now logged in")
-                        .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() { //can probably change to .setNeutralButton
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);

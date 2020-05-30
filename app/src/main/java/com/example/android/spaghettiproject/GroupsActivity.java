@@ -69,11 +69,11 @@ public class GroupsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_log_out:
-                Intent intent = new Intent(GroupsActivity.this,
+                Intent loginIntent = new Intent(GroupsActivity.this,
                         LoginActivity.class);
                 Toast.makeText(this, "Successfully logged out", Toast.LENGTH_LONG).show();
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                loginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(loginIntent);
                 finish();
                 return true;
             case R.id.action_settings:
@@ -83,7 +83,8 @@ public class GroupsActivity extends AppCompatActivity {
                 Toast.makeText(this, "Make a settings activity", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_contact:
-                Toast.makeText(this, "Make a contact us page", Toast.LENGTH_SHORT).show();
+                Intent contactIntent = new Intent(GroupsActivity.this, ContactUsActivity.class);
+                startActivity(contactIntent);
                 return true;
             default:
                 // Do nothing
