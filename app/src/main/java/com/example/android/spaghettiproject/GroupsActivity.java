@@ -26,7 +26,7 @@ public class GroupsActivity extends AppCompatActivity {
     private final LinkedList<String> mGroupList = new LinkedList<>();
 
     private RecyclerView mRecyclerView;
-    private NextButtonListAdapter mAdapter;
+    private RecyclerAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class GroupsActivity extends AppCompatActivity {
         mGroupList.addLast("test???");
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        mAdapter = new NextButtonListAdapter(this, mGroupList);
+        mAdapter = new RecyclerAdapter(this, mGroupList);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }

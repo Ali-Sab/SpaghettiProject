@@ -13,16 +13,16 @@ import android.widget.Button;
 
 import java.util.LinkedList;
 
-public class NextButtonListAdapter extends RecyclerView.Adapter<NextButtonListAdapter.NextButtonListHolder> {
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NextButtonListHolder> {
 
     private final LinkedList<String> mGroupList;
     private final LayoutInflater mInflater;
 
     public class NextButtonListHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final Button nextButtonView;
-        public final NextButtonListAdapter mAdapter;
+        public final RecyclerAdapter mAdapter;
 
-        public NextButtonListHolder(@NonNull View itemView, NextButtonListAdapter adapter) {
+        public NextButtonListHolder(@NonNull View itemView, RecyclerAdapter adapter) {
             super(itemView);
             nextButtonView = itemView.findViewById(R.id.button_group);
             this.mAdapter = adapter;
@@ -48,20 +48,20 @@ public class NextButtonListAdapter extends RecyclerView.Adapter<NextButtonListAd
         }
     }
 
-    public NextButtonListAdapter(Context context, LinkedList<String> groupList) {
+    public RecyclerAdapter(Context context, LinkedList<String> groupList) {
         mInflater = LayoutInflater.from(context);
         this.mGroupList = groupList;
     }
 
     @NonNull
     @Override
-    public NextButtonListAdapter.NextButtonListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerAdapter.NextButtonListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View mItemView = mInflater.inflate(R.layout.next_button_item, parent, false);
         return new NextButtonListHolder(mItemView, this);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final NextButtonListAdapter.NextButtonListHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerAdapter.NextButtonListHolder holder, int position) {
         final String mCurrent = mGroupList.get(position);
         holder.nextButtonView.setText(mCurrent);
         holder.nextButtonView.setOnClickListener(new Button.OnClickListener() {

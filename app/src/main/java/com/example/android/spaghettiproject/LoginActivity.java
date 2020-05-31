@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
     }
 
     public void goToProfile(View view) {
-        Intent profileIntent = new Intent(LoginActivity.this, ProfileActivity.class);
+        Intent profileIntent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(profileIntent);
     }
 

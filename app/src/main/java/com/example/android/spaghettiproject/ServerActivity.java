@@ -66,12 +66,12 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
             } else if (password.isEmpty()) {
                 isMissingPassword = true;
                 return null;
-            } else if (delegate.getClass().getSimpleName().equals("ProfileActivity") && name.isEmpty()) {
+            } else if (delegate.getClass().getSimpleName().equals("RegisterActivity") && name.isEmpty()) {
                 isMissingName = true;
                 return null;
             }
 
-            if (delegate.getClass().getSimpleName().equals("ProfileActivity"))
+            if (delegate.getClass().getSimpleName().equals("RegisterActivity"))
                 urlParams = "API_KEY=" + URLEncoder.encode(ServerAPIKey, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8") + "&name=" + URLEncoder.encode(name, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");
             else if (delegate.getClass().getSimpleName().equals("LoginActivity"))
                 urlParams = "API_KEY=" + URLEncoder.encode(ServerAPIKey, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");
@@ -153,7 +153,7 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
                 } else if (responseCheck.equals("Login Success")) {
                     delegate.processFinish("success");
                 }
-            } else if (delegate.getClass().getSimpleName().equals("ProfileActivity")) {
+            } else if (delegate.getClass().getSimpleName().equals("RegisterActivity")) {
                 String responseCheck = response.substring(1, response.length() - 1);
                 if (responseCheck.equals("Email already exists")) {
                     delegate.processFinish("email exists");

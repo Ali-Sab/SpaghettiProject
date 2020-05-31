@@ -22,7 +22,7 @@ public class ListsActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    //private NextButtonListAdapter mAdapter;
+    //private RecyclerAdapter() mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class ListsActivity extends AppCompatActivity {
         mListsList.addLast("njll;,");
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        mAdapter = new NextButtonListAdapter(this, mListsList);
+        mAdapter = new RecyclerAdapter(this, mListsList);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 

@@ -27,7 +27,7 @@ public class NetworkUtils {
         if (urlParameters == null)
             return "Params are empty";
         String requestURL = URL;
-        if (activityName.equals("ProfileActivity"))
+        if (activityName.equals("RegisterActivity"))
             requestURL += "register";
         else if (activityName.equals("LoginActivity")) {
             requestURL += "login";

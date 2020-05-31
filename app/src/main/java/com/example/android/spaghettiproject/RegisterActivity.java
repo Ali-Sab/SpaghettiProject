@@ -21,7 +21,7 @@ import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 
 import retrofit2.Retrofit;
 
-public class ProfileActivity extends AppCompatActivity implements ServerActivity.AsyncResponse {
+public class RegisterActivity extends AppCompatActivity implements ServerActivity.AsyncResponse {
 
     private EditText email;
     private EditText pass1;
@@ -37,7 +37,7 @@ public class ProfileActivity extends AppCompatActivity implements ServerActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_register);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
         Retrofit retrofitClient = RetrofitClient.getInstance();
@@ -66,26 +66,26 @@ public class ProfileActivity extends AppCompatActivity implements ServerActivity
                     password = pass1.getText().toString();
 
                     if (TextUtils.isEmpty(email.getText().toString())) {
-                        Toast.makeText(ProfileActivity.this, "Email cannot be empty", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Email cannot be empty", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                     if (TextUtils.isEmpty(password)) {
-                        Toast.makeText(ProfileActivity.this, "Password cannot be empty", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Password cannot be empty", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                     if (TextUtils.isEmpty(name.getText().toString())) {
-                        Toast.makeText(ProfileActivity.this, "Please enter a name", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Please enter a name", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                     //Run below only if user account and password matches
-                    new ServerActivity(ProfileActivity.this, email.getText().toString(), name.getText().toString(), pass1.getText().toString(), progressBar).execute(name.getText().toString());
+                    new ServerActivity(RegisterActivity.this, email.getText().toString(), name.getText().toString(), pass1.getText().toString(), progressBar).execute(name.getText().toString());
 
                 }
                 else
-                    Toast.makeText(ProfileActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -94,7 +94,7 @@ public class ProfileActivity extends AppCompatActivity implements ServerActivity
     public void processFinish(String output) {
         switch (output) {
             case "success":
-                new AlertDialog.Builder(ProfileActivity.this)
+                new AlertDialog.Builder(RegisterActivity.this)
                         .setTitle("Success!")
                         .setMessage("Please login with your new account")
                         .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -107,7 +107,7 @@ public class ProfileActivity extends AppCompatActivity implements ServerActivity
                         .show();
                 break;
             case "email exists":
-                new AlertDialog.Builder(ProfileActivity.this)
+                new AlertDialog.Builder(RegisterActivity.this)
                         .setTitle("Registration Error")
                         .setMessage("Email already exists")
                         .setNegativeButton(android.R.string.ok, null)
