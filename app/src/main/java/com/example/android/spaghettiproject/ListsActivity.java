@@ -2,6 +2,7 @@ package com.example.android.spaghettiproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +21,8 @@ public class ListsActivity extends AppCompatActivity {
     private final LinkedList<String> mListsList = new LinkedList<>();
 
     private RecyclerView mRecyclerView;
-    private NextButtonListAdapter mAdapter;
+    private RecyclerView.Adapter mAdapter;
+    //private NextButtonListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
