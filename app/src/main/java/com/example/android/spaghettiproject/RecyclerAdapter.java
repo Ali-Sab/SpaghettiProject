@@ -15,6 +15,7 @@ import java.util.LinkedList;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NextButtonListHolder> {
 
+    //Initializing layout inflater and list of groups/items user is part of
     private final LinkedList<String> mGroupList;
     private final LayoutInflater mInflater;
 
@@ -32,27 +33,30 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NextBu
         @Override
         public void onClick(View v) {
             int mPosition = getLayoutPosition();
-            Log.d("position:", Integer.toString(mPosition));
-            String element = mGroupList.get(mPosition);
+            Log.d("position:", Integer.toString(mPosition));//Tracks which element selected
+            String element = mGroupList.get(mPosition);//element is group/item selected from list
 
             Intent intent;
+            //Checks which activity is involved (groups or items in groups) to create appropriate intent
             if (this.getClass().getSimpleName().equals("GroupsActivity"))
-                intent = new Intent(v.getContext(), ListsActivity.class);
+                intent = new Intent(v.getContext(), GroupsActivity.class);//Groups
             else
-                intent = new Intent(v.getContext(), ListsActivity.class);
-            Log.d("BEFORE PUTEXTRA:", "it works");
-            intent.putExtra(GroupsActivity.EXTRA_MESSAGE, element);
-            Log.d("BEFORE STARTACTIVITY", "it works");
-            v.getContext().startActivity(intent);
+                intent = new Intent(v.getContext(), ListsActivity.class);//Lists
+            Log.d("BEFORE PUTEXTRA:", "it works");//Logging
+            intent.putExtra(GroupsActivity.EXTRA_MESSAGE, element);//retrieves map of extended data from intent, returning map of all other extras retrieved
+            Log.d("BEFORE STARTACTIVITY", "it works");//Logging
+            v.getContext().startActivity(intent);//change screens (activities)
 
         }
     }
 
+    //Constructor with context, list
     public RecyclerAdapter(Context context, LinkedList<String> groupList) {
         mInflater = LayoutInflater.from(context);
         this.mGroupList = groupList;
     }
 
+    //Used when RecyclerView needs a new ViewHolder for data
     @NonNull
     @Override
     public RecyclerAdapter.NextButtonListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -60,6 +64,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NextBu
         return new NextButtonListHolder(mItemView, this);
     }
 
+    //Used to display data at a specified position
     @Override
     public void onBindViewHolder(@NonNull final RecyclerAdapter.NextButtonListHolder holder, int position) {
         final String mCurrent = mGroupList.get(position);
@@ -71,10 +76,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NextBu
 
                 Intent intent;
                 String currentActivity = holder.nextButtonView.getContext().getClass().getSimpleName();
-                if (currentActivity.equals("GroupsActivity")) {
-                    intent = new Intent(v.getContext(), ListsActivity.class);
+                //Setting proper intent
+                if (currentActivity.equals("GroupsActivity")) {//Dealing with groups
+                    intent = new Intent(v.getContext(), GroupsActivity.class);
                 }
-                else {
+                else {//Dealing with lists
                     intent = new Intent(v.getContext(), ListsActivity.class);
                 }
                 intent.putExtra(GroupsActivity.EXTRA_MESSAGE, mCurrent);
@@ -83,6 +89,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NextBu
         });
     }
 
+    //Returns size of group/list array
     @Override
     public int getItemCount() {
         return mGroupList.size();

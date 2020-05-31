@@ -22,7 +22,6 @@ public class ListsActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    //private RecyclerAdapter() mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
