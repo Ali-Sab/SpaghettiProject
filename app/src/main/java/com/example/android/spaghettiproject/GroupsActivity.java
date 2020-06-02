@@ -56,6 +56,8 @@ public class GroupsActivity extends AppCompatActivity {
         mAdapter = new RecyclerAdapter(this, mGroupList);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+       // ItemTouchHelper helper = new ItemTouchHelper(new My ItemTouchCallback(mAdapter));
+        //helper.attachToRecyclerView(recyclerView);
     }
 
     @Override
