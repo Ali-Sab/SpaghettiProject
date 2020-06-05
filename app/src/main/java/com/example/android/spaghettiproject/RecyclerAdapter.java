@@ -39,9 +39,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NextBu
             Intent intent;
             //Checks which activity is involved (groups or items in groups) to create appropriate intent
             if (this.getClass().getSimpleName().equals("GroupsActivity"))
-                intent = new Intent(v.getContext(), GroupsActivity.class);//Groups
+                intent = new Intent(v.getContext(), ListsActivity.class);//Groups
             else
-                intent = new Intent(v.getContext(), ListsActivity.class);//Lists
+                intent = new Intent(v.getContext(), ContactUsActivity.class);//Lists
             Log.d("BEFORE PUTEXTRA:", "it works");//Logging
             intent.putExtra(GroupsActivity.EXTRA_MESSAGE, element);//retrieves map of extended data from intent, returning map of all other extras retrieved
             Log.d("BEFORE STARTACTIVITY", "it works");//Logging
@@ -78,10 +78,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NextBu
                 String currentActivity = holder.nextButtonView.getContext().getClass().getSimpleName();
                 //Setting proper intent
                 if (currentActivity.equals("GroupsActivity")) {//Dealing with groups
-                    intent = new Intent(v.getContext(), GroupsActivity.class);
+                    intent = new Intent(v.getContext(), ListsActivity.class);
                 }
                 else {//Dealing with lists
-                    intent = new Intent(v.getContext(), ListsActivity.class);
+                    intent = new Intent(v.getContext(), ContactUsActivity.class);
                 }
                 intent.putExtra(GroupsActivity.EXTRA_MESSAGE, mCurrent);
                 v.getContext().startActivity(intent);
