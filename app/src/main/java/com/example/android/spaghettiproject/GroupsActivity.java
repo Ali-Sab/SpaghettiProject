@@ -77,7 +77,7 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
                         if(m_Text.length() > 0) {
                             //mGroupList.add(m_Text);
                             //mAdapter.notifyDataSetChanged();
-                            new ServerActivity(GroupsActivity.this, getIntent().getStringExtra("email"), m_Text).execute();
+                            new ServerActivity(GroupsActivity.this, getIntent().getStringExtra("email"), m_Text, progressBar).execute();
 
                         }else{
                             dialog.cancel();
@@ -142,6 +142,8 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
                 break;
             default:
                 //Do nothing
+                Toast.makeText(this, "Neither", Toast.LENGTH_LONG).show();
+
         }
     }
 }

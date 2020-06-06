@@ -17,7 +17,7 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
     private static final String ServerAPIKey = "TnqMS5BalKDYW6vE9gL80KrV1feGNhnq";
     private static String email;
     private String name = null;
-    private String groupName;
+    //private String groupName;
     private String password;
     private WeakReference<Context> context;
     private Boolean isMissingEmail = false;
@@ -44,22 +44,14 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
         this.delegate = delegate;
         //this.context = new WeakReference<>(context);
         this.email = email;
-        this.password = password;
+        this.password = password; //Used for groupName for GroupsActivity
         this.progressBar = new WeakReference<> (progressBar);
-    }
-
-    ServerActivity(AsyncResponse delegate, String email, String groupName) {
-        this.delegate = delegate;
-        //this.context = new WeakReference<>(context);
-        this.email = email;
-        this.groupName = groupName;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if (delegate.getClass().getSimpleName().equals("RegisterActivity") || delegate.getClass().getSimpleName().equals("LoginActivity"))
-            progressBar.get().setVisibility(View.VISIBLE);
+        progressBar.get().setVisibility(View.VISIBLE);
     }
 
 
@@ -86,7 +78,7 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
             else if (delegate.getClass().getSimpleName().equals("LoginActivity"))
                 urlParams = "API_KEY=" + URLEncoder.encode(ServerAPIKey, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");
             else if (delegate.getClass().getSimpleName().equals("GroupsActivity"))
-                urlParams = "API_KEY=" + URLEncoder.encode(ServerAPIKey, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8") + "&groupName=" + URLEncoder.encode(groupName, "UTF-8");
+                urlParams = "API_KEY=" + URLEncoder.encode(ServerAPIKey, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8") + "&groupName=" + URLEncoder.encode(password, "UTF-8");
 
         }
         catch (UnsupportedEncodingException e) {
@@ -103,8 +95,7 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String response) {
         super.onPostExecute(response);
-        if (delegate.getClass().getSimpleName().equals("RegisterActivity") || delegate.getClass().getSimpleName().equals("LoginActivity"))
-            progressBar.get().setVisibility(View.GONE);
+        progressBar.get().setVisibility(View.GONE);
         if (isMissingEmail)
             delegate.processFinish("missing email");
         else if (isMissingPassword)
