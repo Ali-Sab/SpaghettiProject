@@ -15,8 +15,9 @@ import java.net.URLEncoder;
 public class ServerActivity extends AsyncTask<String, Void, String> {
 
     private static final String ServerAPIKey = "TnqMS5BalKDYW6vE9gL80KrV1feGNhnq";
-    private String email;
+    private static String email;
     private String name = null;
+    private String groupName;
     private String password;
     private WeakReference<Context> context;
     private Boolean isMissingEmail = false;
@@ -39,7 +40,6 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
         this.progressBar = new WeakReference<> (progressBar);
     }
 
-    //Do we need a serveractivity given no name?
     ServerActivity(AsyncResponse delegate, String email, String password, ProgressBar progressBar) {
         this.delegate = delegate;
         //this.context = new WeakReference<>(context);
@@ -48,10 +48,18 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
         this.progressBar = new WeakReference<> (progressBar);
     }
 
+    ServerActivity(AsyncResponse delegate, String email, String groupName) {
+        this.delegate = delegate;
+        //this.context = new WeakReference<>(context);
+        this.email = email;
+        this.groupName = groupName;
+    }
+
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progressBar.get().setVisibility(View.VISIBLE);
+        if (delegate.getClass().getSimpleName().equals("RegisterActivity") || delegate.getClass().getSimpleName().equals("LoginActivity"))
+            progressBar.get().setVisibility(View.VISIBLE);
     }
 
 
@@ -60,15 +68,17 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
         String urlParams = null;
 		
         try {
-            if (email.isEmpty()) {
-                isMissingEmail = true;
-                return null;
-            } else if (password.isEmpty()) {
-                isMissingPassword = true;
-                return null;
-            } else if (delegate.getClass().getSimpleName().equals("RegisterActivity") && name.isEmpty()) {
-                isMissingName = true;
-                return null;
+            if (delegate.getClass().getSimpleName().equals("RegisterActivity") || delegate.getClass().getSimpleName().equals("LoginActivity")) {
+                if (email.isEmpty()) {
+                    isMissingEmail = true;
+                    return null;
+                } else if (password.isEmpty()) {
+                    isMissingPassword = true;
+                    return null;
+                } else if (delegate.getClass().getSimpleName().equals("RegisterActivity") && name.isEmpty()) {
+                    isMissingName = true;
+                    return null;
+                }
             }
 
             if (delegate.getClass().getSimpleName().equals("RegisterActivity"))
@@ -76,7 +86,8 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
             else if (delegate.getClass().getSimpleName().equals("LoginActivity"))
                 urlParams = "API_KEY=" + URLEncoder.encode(ServerAPIKey, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");
             else if (delegate.getClass().getSimpleName().equals("GroupsActivity"))
-                urlParams = "API_KEY=" + URLEncoder.encode(ServerAPIKey, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");
+                urlParams = "API_KEY=" + URLEncoder.encode(ServerAPIKey, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8") + "&groupName=" + URLEncoder.encode(groupName, "UTF-8");
+
         }
         catch (UnsupportedEncodingException e) {
             Log.d("Error", e.toString());
@@ -92,7 +103,8 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String response) {
         super.onPostExecute(response);
-        progressBar.get().setVisibility(View.GONE);
+        if (delegate.getClass().getSimpleName().equals("RegisterActivity") || delegate.getClass().getSimpleName().equals("LoginActivity"))
+            progressBar.get().setVisibility(View.GONE);
         if (isMissingEmail)
             delegate.processFinish("missing email");
         else if (isMissingPassword)
@@ -160,8 +172,14 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
                 } else if (responseCheck.equals("Registration successful")) {
                     delegate.processFinish("success");
                 }
+            }else if (delegate.getClass().getSimpleName().equals("GroupsActivity")) {
+                String responseCheck = response.substring(1, response.length() - 1);
+                if (responseCheck.equals("Created group")) {
+                    delegate.processFinish("created group");
+                } else if (responseCheck.equals("Deleted group")) {
+                    delegate.processFinish("deleted group");
+                }
             }
         }
     }
-
 }

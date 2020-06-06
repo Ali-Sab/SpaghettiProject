@@ -23,14 +23,24 @@ public class NetworkUtils {
     //URL
     private static final String URL = "https://spaghetti-project.herokuapp.com/";
 
+    private static String requestMethod = "";
+
     static String getInfo(String activityName, String urlParameters){
         if (urlParameters == null)
             return "Params are empty";
         String requestURL = URL;
-        if (activityName.equals("RegisterActivity"))
+        if (activityName.equals("RegisterActivity")) {
             requestURL += "register";
-        else if (activityName.equals("LoginActivity")) {
+            requestMethod = "POST";
+        }else if (activityName.equals("LoginActivity")) {
             requestURL += "login";
+            requestMethod = "POST";
+        }else if (activityName.equals("GroupsActivity")) {
+            requestURL += "groups/add";
+            requestMethod = "POST";
+        }else if (activityName.equals("ListsActivity")) {
+            requestURL += "lists";
+            requestMethod = "POST";
         }
 
         HttpsURLConnection conn = null;
@@ -45,7 +55,7 @@ public class NetworkUtils {
             conn = (HttpsURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setDoInput(true);
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod(requestMethod);
 
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.setRequestProperty("charset", "utf-8");
