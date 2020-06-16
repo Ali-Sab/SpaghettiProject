@@ -112,7 +112,10 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
 
     public void goToProfile(View view) {
         Intent profileIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+        profileIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        profileIntent.putExtra("email", email.getText().toString());
         startActivity(profileIntent);
+        finish();
     }
 
     public void keepLoggedIn(View view) {

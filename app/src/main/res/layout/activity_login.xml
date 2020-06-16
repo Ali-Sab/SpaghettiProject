@@ -26,7 +26,7 @@
             android:layout_marginBottom="10dp"
             android:autofillHints=".AUTOFILL_HINT_USERNAME"
             android:ems="10"
-            android:hint="@string/prompt_email"
+            android:hint="@string/register_email"
             android:inputType="textEmailAddress" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -70,7 +70,7 @@
             android:clickable="true"
             android:focusable="true"
             android:onClick="goToProfile"
-            android:text="@string/register_new"
+            android:text="@string/login_sign_up"
             tools:layout_editor_absoluteY="655dp" />
 
     </LinearLayout>
