@@ -10,8 +10,6 @@
         android:id="@+id/formLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginRight="100dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -21,25 +19,26 @@
 
         <EditText
             android:id="@+id/editTextEmail"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:autofillHints=".AUTOFILL_HINT_USERNAME"
-            android:ems="10"
-            android:hint="@string/prompt_email"
+            android:ems="12"
+            android:hint="@string/login_email"
             android:inputType="textEmailAddress" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:passwordToggleEnabled="true"
             tools:layout_editor_absoluteX="206dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextPassword"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/password"
+                android:hint="@string/login_password"
+                android:ems="12"
                 android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -60,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="20dp"
-            android:onClick="onClick"
+            android:ems="10"
             android:text="@string/login" />
 
         <TextView
@@ -70,7 +69,7 @@
             android:clickable="true"
             android:focusable="true"
             android:onClick="goToProfile"
-            android:text="@string/register_new"
+            android:text="@string/login_sign_up"
             tools:layout_editor_absoluteY="655dp" />
 
     </LinearLayout>
@@ -94,15 +93,14 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:ems="10"
         android:gravity="center"
         android:text="@string/spaghetti_login"
+        android:textColor="#008577"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
-        app:layout_constraintVertical_bias="0.479" />
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
