@@ -17,8 +17,7 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
     private static final String ServerAPIKey = "TnqMS5BalKDYW6vE9gL80KrV1feGNhnq";
     private static String email;
     private String name = null;
-    //private String groupName;
-    private String password;
+    private String password = "";
     private WeakReference<Context> context;
     private Boolean isMissingEmail = false;
     private Boolean isMissingPassword = false;
@@ -48,6 +47,12 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
         this.progressBar = new WeakReference<> (progressBar);
     }
 
+    ServerActivity(AsyncResponse delegate, String email, ProgressBar progressBar) {
+        this.delegate = delegate;
+        this.email = email;
+        this.progressBar = new WeakReference<> (progressBar);
+    }
+
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -58,7 +63,7 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... strings) {
         String urlParams = null;
-		
+
         try {
             if (delegate.getClass().getSimpleName().equals("RegisterActivity") || delegate.getClass().getSimpleName().equals("LoginActivity")) {
                 if (email.isEmpty()) {
@@ -77,11 +82,14 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
                 urlParams = "API_KEY=" + URLEncoder.encode(ServerAPIKey, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8") + "&name=" + URLEncoder.encode(name, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");
             else if (delegate.getClass().getSimpleName().equals("LoginActivity"))
                 urlParams = "API_KEY=" + URLEncoder.encode(ServerAPIKey, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");
-            else if (delegate.getClass().getSimpleName().equals("GroupsActivity"))
-                urlParams = "API_KEY=" + URLEncoder.encode(ServerAPIKey, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8") + "&groupName=" + URLEncoder.encode(password, "UTF-8");
-
-        }
-        catch (UnsupportedEncodingException e) {
+            else if (delegate.getClass().getSimpleName().equals("GroupsActivity")){
+                if (password != "") {
+                    urlParams = "API_KEY=" + URLEncoder.encode(ServerAPIKey, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8") + "&groupName=" + URLEncoder.encode(password, "UTF-8");
+                }else{
+                    urlParams = "API_KEY=" + ServerAPIKey + "&email=" + email;
+                }
+            }
+        }catch (UnsupportedEncodingException e) {
             Log.d("Error", e.toString());
             return null;
         }
@@ -169,6 +177,8 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
                     delegate.processFinish("created group");
                 } else if (responseCheck.equals("Deleted group")) {
                     delegate.processFinish("deleted group");
+                }else{
+                    delegate.processFinish(response);
                 }
             }
         }

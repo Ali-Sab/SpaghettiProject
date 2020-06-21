@@ -19,7 +19,6 @@ import javax.net.ssl.HttpsURLConnection;
 public class NetworkUtils {
 
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
-
     //URL
     private static final String URL = "https://spaghetti-project.herokuapp.com/";
 
@@ -36,8 +35,14 @@ public class NetworkUtils {
             requestURL += "login";
             requestMethod = "POST";
         }else if (activityName.equals("GroupsActivity")) {
-            requestURL += "groups/add";
-            requestMethod = "POST";
+            if(urlParameters.contains("&groupName=")){
+                requestURL += "groups/add";
+                requestMethod = "POST";
+            }else{
+                requestURL += "groups?" + urlParameters;
+                requestMethod = "GET";
+            }
+
         }else if (activityName.equals("ListsActivity")) {
             requestURL += "lists";
             requestMethod = "POST";
@@ -53,21 +58,32 @@ public class NetworkUtils {
             URL url = new URL(requestURL);
 
             conn = (HttpsURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.setRequestMethod(requestMethod);
 
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            conn.setRequestProperty("charset", "utf-8");
-            conn.setRequestProperty("Content-Length", Integer.toString(urlParameters.length()));
-            conn.setUseCaches(false);
+            if (requestMethod == "GET") {
+                conn.setDoOutput(false);
+                conn.setDoInput(true);
+                conn.setRequestMethod("GET");
+            } else {
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+                conn.setRequestMethod("POST");
 
-            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-            wr.writeBytes(urlParameters);
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.setRequestProperty("charset", "utf-8");
+                conn.setRequestProperty("Content-Length", Integer.toString(urlParameters.length()));
+                conn.setUseCaches(false);
+
+                DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+                wr.writeBytes(urlParameters);
 
 
-            wr.flush();
-            wr.close();
+                wr.flush();
+                wr.close();
+            }
+
+
+
+
             Log.d(LOG_TAG, Integer.toString(conn.getResponseCode()));
             Log.d(LOG_TAG, conn.getResponseMessage());
 //            Log.d(LOG_TAG, "getContent()=" + conn.getContent().toString());

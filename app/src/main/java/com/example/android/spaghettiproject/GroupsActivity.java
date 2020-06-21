@@ -48,14 +48,13 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mGroupList.add("noice");
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mAdapter = new RecyclerAdapter(this, mGroupList);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        // ItemTouchHelper helper = new ItemTouchHelper(new My ItemTouchCallback(mAdapter));
-        //helper.attachToRecyclerView(recyclerView);
+
+        new ServerActivity(GroupsActivity.this, getIntent().getStringExtra("email"), progressBar).execute();
 
 
         FloatingActionButton fabAdd = findViewById(R.id.fab);
@@ -133,17 +132,19 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
     }
 
     public void processFinish(String output) {
-        switch (output) {
-            case "created group":
-                Toast.makeText(this, "Created Group!", Toast.LENGTH_LONG).show();
-                break;
-            case "deleted group":
-                Toast.makeText(this, "Deleted Group!", Toast.LENGTH_LONG).show();
-                break;
-            default:
-                //Do nothing
-                Toast.makeText(this, "Neither", Toast.LENGTH_LONG).show();
+            switch (output) {
+                case "created group":
+                    Toast.makeText(this, "Created Group!", Toast.LENGTH_LONG).show();
+                    break;
+                case "deleted group":
+                    Toast.makeText(this, "Deleted Group!", Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    //output is the list of json objects in this case
 
-        }
+                    System.out.println(output);
+
+            }
     }
+
 }
