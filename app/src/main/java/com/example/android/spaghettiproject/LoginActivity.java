@@ -23,6 +23,9 @@ import android.widget.Toast;
 import com.example.android.spaghettiproject.Retrofit.IMyService;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 //import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity implements ServerActivity.AsyncResponse {
@@ -68,7 +71,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
         mEmail = (EditText) findViewById(R.id.editTextEmail);
         mPassword = (TextInputEditText) findViewById(R.id.editTextPassword);
         mLogin = (Button) findViewById(R.id.btnLogin);
-        mLoginText = (TextView) findViewById(R.id.textViewLogin);
+        mLoginText = (TextView) findViewById(R.id.register_textViewLogin);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         mLogin.setOnClickListener(new View.OnClickListener() {
@@ -133,47 +136,56 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
 
     @Override
     public void processFinish(String output) {
-        switch (output) {
-            case "success":
-                Toast.makeText(LoginActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
-                new AlertDialog.Builder(LoginActivity.this)
-                        .setTitle("Success!")
-                        .setMessage("You're now logged in")
-                        .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() { //can probably change to .setNeutralButton
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                intent.putExtra("email", mEmail.getText().toString());
-                                startActivity(intent);
-                                finish();
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-                break;
-            case "missing email":
-                Toast.makeText(LoginActivity.this, "Please enter your email", Toast.LENGTH_LONG).show();
-                break;
-            case "missing password":
-                Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_LONG).show();
-                break;
-            case "wrong password":
-                new AlertDialog.Builder(LoginActivity.this)
-                        .setTitle("Login Error")
-                        .setMessage("Password is incorrect.")
-                        .setNegativeButton(android.R.string.ok, null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-                break;
-            case "wrong email":
-                new AlertDialog.Builder(LoginActivity.this)
-                        .setTitle("Login Error")
-                        .setMessage("Email does not exist.")
-                        .setNegativeButton(android.R.string.ok, null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-                break;
+        try {
+            JSONObject response = new JSONObject(output);
+            switch (response.getString("statusMessage")) {
+                case "success":
+                    Toast.makeText(LoginActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
+                    new AlertDialog.Builder(LoginActivity.this)
+                            .setTitle("Success!")
+                            .setMessage("You're now logged in")
+                            .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() { //can probably change to .setNeutralButton
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intent.putExtra("email", mEmail.getText().toString());
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                    break;
+                case "error":
+                    switch (response.getString("errorMessage")) {
+                        case "Email does not exist":
+                            new AlertDialog.Builder(LoginActivity.this)
+                                    .setTitle("Login Error")
+                                    .setMessage("Email does not exist.")
+                                    .setNegativeButton(android.R.string.ok, null)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                            break;
+                        case "Wrong password":
+                            new AlertDialog.Builder(LoginActivity.this)
+                                    .setTitle("Login Error")
+                                    .setMessage("Password is incorrect.")
+                                    .setNegativeButton(android.R.string.ok, null)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                            break;
+                        case "Missing password":
+                            Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_LONG).show();
+                            break;
+                        case "Request failed to send":
+                            Toast.makeText(LoginActivity.this, "Technical error, please try again", Toast.LENGTH_LONG).show();
+                            break;
+                    }
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -60,17 +60,6 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
         String urlParams = null;
 		
         try {
-            if (email.isEmpty()) {
-                isMissingEmail = true;
-                return null;
-            } else if (password.isEmpty()) {
-                isMissingPassword = true;
-                return null;
-            } else if (delegate.getClass().getSimpleName().equals("RegisterActivity") && name.isEmpty()) {
-                isMissingName = true;
-                return null;
-            }
-
             if (delegate.getClass().getSimpleName().equals("RegisterActivity"))
                 urlParams = "API_KEY=" + URLEncoder.encode(ServerAPIKey, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8") + "&name=" + URLEncoder.encode(name, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");
             else if (delegate.getClass().getSimpleName().equals("LoginActivity"))
@@ -80,11 +69,11 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
         }
         catch (UnsupportedEncodingException e) {
             Log.d("Error", e.toString());
-            return null;
+            return "{\"statusMessage\":\"error\", \"errorMessage\":\"Request failed to send\"}";
         }
         catch (NullPointerException e) {
             e.printStackTrace();
-            return null;
+            return "{\"statusMessage\":\"error\", \"errorMessage\":\"Request failed to send\"}";
         }
         return NetworkUtils.getInfo(delegate.getClass().getSimpleName(), urlParams);
     }
@@ -93,12 +82,7 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String response) {
         super.onPostExecute(response);
         progressBar.get().setVisibility(View.GONE);
-        if (isMissingEmail)
-            delegate.processFinish("missing email");
-        else if (isMissingPassword)
-            delegate.processFinish("missing password");
-        else if (isMissingName)
-            delegate.processFinish("missing name");
+        delegate.processFinish(response);
 //        try {
 //            JSONObject jsonObject = new JSONObject(s);
 //            JSONArray itemsArray = jsonObject.getJSONArray("items");
@@ -143,25 +127,5 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
 ////            password.get().setText("");
 //            e.printStackTrace();
 //        }
-        if (response != null) {
-            if (delegate.getClass().getSimpleName().equals("LoginActivity")) {
-                String responseCheck = response.substring(1, response.length() - 1);
-                if (responseCheck.equals("Email does not exist")) {
-                    delegate.processFinish("wrong email");
-                } else if (responseCheck.equals("Wrong password")) {
-                    delegate.processFinish("wrong password");
-                } else if (responseCheck.equals("Login Success")) {
-                    delegate.processFinish("success");
-                }
-            } else if (delegate.getClass().getSimpleName().equals("RegisterActivity")) {
-                String responseCheck = response.substring(1, response.length() - 1);
-                if (responseCheck.equals("Email already exists")) {
-                    delegate.processFinish("email exists");
-                } else if (responseCheck.equals("Registration successful")) {
-                    delegate.processFinish("success");
-                }
-            }
-        }
     }
-
 }

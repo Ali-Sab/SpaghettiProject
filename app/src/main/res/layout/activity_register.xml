@@ -138,7 +138,7 @@
             android:text="@string/register" />
 
         <TextView
-            android:id="@+id/textViewLogin"
+            android:id="@+id/register_textViewLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

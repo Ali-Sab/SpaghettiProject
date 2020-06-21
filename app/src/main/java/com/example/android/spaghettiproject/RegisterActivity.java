@@ -25,6 +25,9 @@ import android.widget.Toast;
 import com.example.android.spaghettiproject.Retrofit.IMyService;
 import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import retrofit2.Retrofit;
 
 public class RegisterActivity extends AppCompatActivity implements ServerActivity.AsyncResponse {
@@ -55,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
         mEmail = (EditText) findViewById(R.id.editTextEmail);
         mPassword1 = (EditText) findViewById(R.id.editTextPassword1);
         mPassword2 = (EditText) findViewById(R.id.editTextPassword2);
-        mLogin = (TextView) findViewById(R.id.textViewLogin);
+        mLogin = (TextView) findViewById(R.id.register_textViewLogin);
         mName = (EditText) findViewById(R.id.editTextName);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -158,38 +161,64 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
 
     @Override
     public void processFinish(String output) {
-        switch (output) {
-            case "success":
-                new AlertDialog.Builder(RegisterActivity.this)
-                        .setTitle("Success!")
-                        .setMessage("Please login with your new account")
-                        .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                finish();
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-                break;
-            case "email exists":
-                new AlertDialog.Builder(RegisterActivity.this)
-                        .setTitle("Registration Error")
-                        .setMessage("Email already exists")
-                        .setNegativeButton(android.R.string.ok, null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-                break;
-            case "missing email":
-                Toast.makeText(this, "Please enter your email", Toast.LENGTH_LONG).show();
-                break;
-            case "missing password":
-                Toast.makeText(this, "Please enter your password", Toast.LENGTH_LONG).show();
-                break;
-            case "missing name":
-                Toast.makeText(this, "Please enter your name", Toast.LENGTH_LONG).show();
-                break;
+        try {
+            JSONObject response = new JSONObject(output);
+            switch (response.getString("statusMessage")) {
+                case "success":
+                    new AlertDialog.Builder(RegisterActivity.this)
+                            .setTitle("Success!")
+                            .setMessage("Please login with your new account")
+                            .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    finish();
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                    break;
+                case "error":
+                    switch (response.getString("errorMessage")) {
+                        case "Email already exists":
+                            new AlertDialog.Builder(RegisterActivity.this)
+                                    .setTitle("Registration Error")
+                                    .setMessage("Email already exists")
+                                    .setNegativeButton(android.R.string.ok, null)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                            break;
+                        case "Email already waiting for confirmation":
+                            new AlertDialog.Builder(RegisterActivity.this)
+                                    .setTitle("Registration Error")
+                                    .setMessage("Email already awaiting confirmation. If this wasn't you, please wait 24 hours and try again.")
+                                    .setNegativeButton(android.R.string.ok, null)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                            break;
+                        case "Failed to insert account data into register confirmation database":
+                            new AlertDialog.Builder(RegisterActivity.this)
+                                    .setTitle("Registration Error")
+                                    .setMessage("Technical error occurred. Please contact us for assistance")
+                                    .setNegativeButton(android.R.string.ok, null)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                            break;
+                        case "Missing password":
+                            Toast.makeText(this, "Please enter your password", Toast.LENGTH_LONG).show();
+                            break;
+                        case "Confirmation email failed to send":
+                            new AlertDialog.Builder(RegisterActivity.this)
+                                    .setTitle("Registration Error")
+                                    .setMessage("Confirmation email failed to send. Please try again after 24 hours.")
+                                    .setNegativeButton(android.R.string.ok, null)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                            break;
+                    }
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
-
 }
