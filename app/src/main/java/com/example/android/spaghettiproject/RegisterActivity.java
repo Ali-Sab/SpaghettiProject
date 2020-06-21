@@ -1,14 +1,20 @@
 package com.example.android.spaghettiproject;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,14 +32,14 @@ import retrofit2.Retrofit;
 
 public class RegisterActivity extends AppCompatActivity implements ServerActivity.AsyncResponse {
 
-    private EditText email;
-    private EditText pass1;
-    private EditText pass2;
-    private Button setup;
-    private TextView login;
+    private EditText mEmail;
+    private EditText mPassword1;
+    private EditText mPassword2;
+    private Button mSetupButton;
+    private TextView mLogin;
     private String password;
-    private EditText name;
-    private ProgressBar progressBar;
+    private EditText mName;
+    private ProgressBar mProgressBar;
 
     IMyService iMyService;
 
@@ -43,32 +49,84 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
         setContentView(R.layout.activity_register);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         Retrofit retrofitClient = RetrofitClient.getInstance();
         iMyService = retrofitClient.create(IMyService.class);
 
-        email = (EditText) findViewById(R.id.editTextEmail);
-        pass1 = (EditText) findViewById(R.id.editTextPassword1);
-        pass2 = (EditText) findViewById(R.id.editTextPassword2);
-        login = (TextView) findViewById(R.id.textViewLogin);
-        name = (EditText) findViewById(R.id.editTextName);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mEmail = (EditText) findViewById(R.id.editTextEmail);
+        mPassword1 = (EditText) findViewById(R.id.editTextPassword1);
+        mPassword2 = (EditText) findViewById(R.id.editTextPassword2);
+        mLogin = (TextView) findViewById(R.id.register_textViewLogin);
+        mName = (EditText) findViewById(R.id.editTextName);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        login.setOnClickListener(new View.OnClickListener() {
+        String redPart = "* ";
+        String greyPart = "Name";
+
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+
+        SpannableString redColoredString = new SpannableString(redPart);
+        redColoredString.setSpan(new ForegroundColorSpan(Color.RED), 0, redPart.length(), 0);
+        builder.append(redColoredString);
+
+        SpannableString greyColoredString = new SpannableString(greyPart);
+        greyColoredString.setSpan(new ForegroundColorSpan(Color.GRAY), 0, greyPart.length(), 0);
+        builder.append(greyColoredString);
+
+        mName.setHint(builder);
+
+        builder = new SpannableStringBuilder();
+        greyPart = "Email";
+        greyColoredString = new SpannableString(greyPart);
+        greyColoredString.setSpan(new ForegroundColorSpan(Color.GRAY), 0, greyPart.length(), 0);
+        builder.append(redColoredString);
+        builder.append(greyColoredString);
+
+        mEmail.setHint(builder);
+
+        builder = new SpannableStringBuilder();
+        greyPart = "Password";
+        greyColoredString = new SpannableString(greyPart);
+        greyColoredString.setSpan(new ForegroundColorSpan(Color.GRAY), 0, greyPart.length(), 0);
+        builder.append(redColoredString);
+        builder.append(greyColoredString);
+
+        mPassword1.setHint(builder);
+
+        builder = new SpannableStringBuilder();
+        greyPart = "Confirm Password";
+        greyColoredString = new SpannableString(greyPart);
+        greyColoredString.setSpan(new ForegroundColorSpan(Color.GRAY), 0, greyPart.length(), 0);
+        builder.append(redColoredString);
+        builder.append(greyColoredString);
+
+        mPassword2.setHint(builder);
+
+
+        Intent intent = getIntent();
+        mEmail.setText(intent.getStringExtra("email"));
+
+        mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("email", mEmail.getText().toString());
+                setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
         });
 
         //Registering once button pressed
-        setup = (Button) findViewById(R.id.btnSetup);
-        setup.setOnClickListener(new View.OnClickListener() {
+        mSetupButton = (Button) findViewById(R.id.btnSetup);
+        mSetupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (pass1.getText().toString().equals(pass2.getText().toString())) {
-                    password = pass1.getText().toString();
+                if (mPassword1.getText().toString().equals(mPassword2.getText().toString())) {
+                    password = mPassword1.getText().toString();
 
-                    if (TextUtils.isEmpty(email.getText().toString())) {
+                    if (TextUtils.isEmpty(mEmail.getText().toString())) {
                         Toast.makeText(RegisterActivity.this, "Email cannot be empty", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -78,19 +136,27 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
                         return;
                     }
 
-                    if (TextUtils.isEmpty(name.getText().toString())) {
+                    if (TextUtils.isEmpty(mName.getText().toString())) {
                         Toast.makeText(RegisterActivity.this, "Please enter a name", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                     //Run below only if user account and password matches
-                    new ServerActivity(RegisterActivity.this, email.getText().toString(), name.getText().toString(), pass1.getText().toString(), progressBar).execute(name.getText().toString());
+                    new ServerActivity(RegisterActivity.this, mEmail.getText().toString(), mName.getText().toString(), mPassword1.getText().toString(), mProgressBar).execute(mName.getText().toString());
 
                 }
                 else
                     Toast.makeText(RegisterActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("email", mEmail.getText().toString());
+        setResult(Activity.RESULT_OK, returnIntent);
+        super.onBackPressed();
     }
 
     @Override

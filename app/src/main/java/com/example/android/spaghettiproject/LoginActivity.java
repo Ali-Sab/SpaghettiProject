@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.spaghettiproject.Retrofit.IMyService;
-import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
@@ -31,11 +29,11 @@ import org.json.JSONObject;
 //import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity implements ServerActivity.AsyncResponse {
-    private EditText email;
-    private TextInputEditText password;
-    private Button login;
-    private TextView loginText;
-    private ProgressBar progressBar;
+    private EditText mEmail;
+    private TextInputEditText mPassword;
+    private Button mLogin;
+    private TextView mLoginText;
+    private ProgressBar mProgressBar;
 
 
     IMyService iMyService;
@@ -70,11 +68,21 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        email = (EditText) findViewById(R.id.editTextEmail);
-        password = (TextInputEditText) findViewById(R.id.editTextPassword);
-        login = (Button) findViewById(R.id.btnLogin);
-        loginText = (TextView) findViewById(R.id.textViewLogin);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mEmail = (EditText) findViewById(R.id.editTextEmail);
+        mPassword = (TextInputEditText) findViewById(R.id.editTextPassword);
+        mLogin = (Button) findViewById(R.id.btnLogin);
+        mLoginText = (TextView) findViewById(R.id.register_textViewLogin);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        mLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ServerActivity(LoginActivity.this, mEmail.getText().toString(), mPassword.getText().toString(), mProgressBar).execute();
+            }
+        });
+
+        Intent intent = getIntent();
+        mEmail.setText(intent.getStringExtra("email"));  //Null case is checked by Android SDK for .setText()
     }
 
 
@@ -83,7 +91,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
         Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("Exit me", true);
-        startActivity(intent);
+        startActivityForResult(intent, AppCodes.ACTIVITY_FINISH_RESULT);
         finish();
     }
 
@@ -108,14 +116,19 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
         }
     }
 
-    public void onClick(View view) {
-        //Run below only if user account and password matches. Figure out how to check these with Alison?
-        new ServerActivity(LoginActivity.this, email.getText().toString(), password.getText().toString(), progressBar).execute();
-    }
-
     public void goToProfile(View view) {
         Intent profileIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-        startActivity(profileIntent);
+        profileIntent.putExtra("email", mEmail.getText().toString());
+        startActivityForResult(profileIntent, AppCodes.ACTIVITY_FINISH_RESULT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == AppCodes.ACTIVITY_FINISH_RESULT) {
+            mEmail.setText(data.getStringExtra("email"));
+        }
     }
 
     public void keepLoggedIn(View view) {
@@ -136,7 +149,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    intent.putExtra("email", email.getText().toString());
+                                    intent.putExtra("email", mEmail.getText().toString());
                                     startActivity(intent);
                                     finish();
                                 }
