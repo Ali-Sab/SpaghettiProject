@@ -25,6 +25,10 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.security.acl.Group;
 import java.util.LinkedList;
 
@@ -132,19 +136,45 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
     }
 
     public void processFinish(String output) {
-            switch (output) {
-                case "created group":
-                    Toast.makeText(this, "Created Group!", Toast.LENGTH_LONG).show();
+        try {
+            JSONObject response = new JSONObject(output);
+            switch (response.getString("statusMessage")) {
+                case "success":
+                    switch (response.getString("successMessage")) {
+                        case "Created group successfully":
+                            Toast.makeText(this, "added group", Toast.LENGTH_SHORT).show();
+                            break;
+                        case "Deleted group successfully":
+                            Toast.makeText(this, "deleted group", Toast.LENGTH_SHORT).show();
+                            break;
+                        case "Successfully fetched groups":
+                            //Get groups
+                            JSONArray dataArray = response.getJSONArray("data");
+                            mGroupList.clear();
+                            for(int i = 0; i < dataArray.length(); i++) {
+                                JSONObject data = dataArray.getJSONObject(i);
+                                mGroupList.add(data.getString("name"));
+                            }
+                            mAdapter.notifyDataSetChanged();
+                            break;
+                    }
                     break;
-                case "deleted group":
-                    Toast.makeText(this, "Deleted Group!", Toast.LENGTH_LONG).show();
+                case "error":
+                    switch (response.getString("errorMessage")) {
+                        case "Email does not exist":
+                            new AlertDialog.Builder(GroupsActivity.this)
+                                    .setTitle("Login Error")
+                                    .setMessage("Email does not exist.")
+                                    .setNegativeButton(android.R.string.ok, null)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                            break;
+                    }
                     break;
-                default:
-                    //output is the list of json objects in this case
-
-                    System.out.println(output);
-
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }

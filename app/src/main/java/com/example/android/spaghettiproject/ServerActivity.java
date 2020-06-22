@@ -17,7 +17,7 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
     private static final String ServerAPIKey = "TnqMS5BalKDYW6vE9gL80KrV1feGNhnq";
     private String email;
     private String name = null;
-    private String password;
+    private String password = "";
     private WeakReference<Context> context;
     private Boolean isMissingEmail = false;
     private Boolean isMissingPassword = false;
