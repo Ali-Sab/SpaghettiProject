@@ -11,9 +11,11 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +29,7 @@ import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import retrofit2.Retrofit;
 
@@ -35,11 +38,17 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
     private EditText mEmail;
     private EditText mPassword1;
     private EditText mPassword2;
-    private Button mSetupButton;
+    private EditText mPhoneNumber;
+    private Button mRegisterButton;
     private TextView mLogin;
     private String password;
     private EditText mName;
     private ProgressBar mProgressBar;
+    private boolean emailIsValid = false;
+    private boolean nameIsValid = false;
+    private boolean password1IsValid = false;
+    private boolean password2IsValid = false;
+    private boolean phoneIsValid = false;
 
     IMyService iMyService;
 
@@ -60,7 +69,9 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
         mPassword2 = (EditText) findViewById(R.id.editTextPassword2);
         mLogin = (TextView) findViewById(R.id.register_textViewLogin);
         mName = (EditText) findViewById(R.id.editTextName);
+        mPhoneNumber = (EditText) findViewById(R.id.editTextPhone);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mRegisterButton = (Button) findViewById(R.id.register_btnSetup);
 
         String redPart = "* ";
         String greyPart = "Name";
@@ -118,35 +129,156 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
             }
         });
 
-        //Registering once button pressed
-        mSetupButton = (Button) findViewById(R.id.btnSetup);
-        mSetupButton.setOnClickListener(new View.OnClickListener() {
+        mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mPassword1.getText().toString().equals(mPassword2.getText().toString())) {
-                    password = mPassword1.getText().toString();
-
-                    if (TextUtils.isEmpty(mEmail.getText().toString())) {
-                        Toast.makeText(RegisterActivity.this, "Email cannot be empty", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    if (TextUtils.isEmpty(password)) {
-                        Toast.makeText(RegisterActivity.this, "Password cannot be empty", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    if (TextUtils.isEmpty(mName.getText().toString())) {
-                        Toast.makeText(RegisterActivity.this, "Please enter a name", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    //Run below only if user account and password matches
-                    new ServerActivity(RegisterActivity.this, mEmail.getText().toString(), mName.getText().toString(), mPassword1.getText().toString(), mProgressBar).execute(mName.getText().toString());
-
-                }
+                if (!emailIsValid)
+                    Toast.makeText(RegisterActivity.this, "Email is invalid", Toast.LENGTH_LONG).show();
+                else if (!nameIsValid)
+                    Toast.makeText(RegisterActivity.this, "Name must be longer then 2 characters", Toast.LENGTH_LONG).show();
+                else if (!password1IsValid)
+                    Toast.makeText(RegisterActivity.this, "Password must be longer than 5 characters", Toast.LENGTH_LONG).show();
+                else if (!password2IsValid)
+                    Toast.makeText(RegisterActivity.this, "Passwords must match", Toast.LENGTH_LONG).show();
+                else if (!phoneIsValid)
+                    Toast.makeText(RegisterActivity.this, "Phone number is invalid", Toast.LENGTH_LONG).show();
                 else
-                    Toast.makeText(RegisterActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                    new ServerActivity(RegisterActivity.this, mEmail.getText().toString(), mName.getText().toString(), mPassword1.getText().toString(), mProgressBar).execute(mName.getText().toString());
+            }
+        });
+
+        mEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                emailIsValid = android.util.Patterns.EMAIL_ADDRESS.matcher(s).matches();
+                if (emailIsValid && nameIsValid && password1IsValid && password2IsValid && phoneIsValid) {
+                    mRegisterButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mRegisterButton.setTextColor(Color.WHITE);
+                } else {
+                    mRegisterButton.setBackgroundColor(getResources().getColor(R.color.common_google_signin_btn_text_light_disabled));
+                    mRegisterButton.setTextColor(Color.BLACK);
+                }
+
+                if (emailIsValid)
+                    mEmail.setTextColor(Color.BLACK);
+                else
+                    mEmail.setTextColor(Color.parseColor("#FF353A"));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        mName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                nameIsValid = s.length() > 2;
+                if (emailIsValid && nameIsValid && password1IsValid && password2IsValid && phoneIsValid) {
+                    mRegisterButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mRegisterButton.setTextColor(Color.WHITE);
+                } else {
+                    mRegisterButton.setBackgroundColor(getResources().getColor(R.color.common_google_signin_btn_text_light_disabled));
+                    mRegisterButton.setTextColor(Color.BLACK);
+                }
+
+                if (nameIsValid)
+                    mName.setTextColor(Color.BLACK);
+                else
+                    mName.setTextColor(Color.parseColor("#FF353A"));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        mPhoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                phoneIsValid = android.util.Patterns.PHONE.matcher(s).matches();
+                if (emailIsValid && nameIsValid && password1IsValid && password2IsValid && phoneIsValid) {
+                    mRegisterButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mRegisterButton.setTextColor(Color.WHITE);
+                } else {
+                    mRegisterButton.setBackgroundColor(getResources().getColor(R.color.common_google_signin_btn_text_light_disabled));
+                    mRegisterButton.setTextColor(Color.BLACK);
+                }
+
+                if (phoneIsValid)
+                    mPhoneNumber.setTextColor(Color.BLACK);
+                else
+                    mPhoneNumber.setTextColor(Color.parseColor("#FF353A"));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        mPassword1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                password1IsValid = s.length() > 5;
+                if (emailIsValid && nameIsValid && password1IsValid && password2IsValid && phoneIsValid) {
+                    mRegisterButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mRegisterButton.setTextColor(Color.WHITE);
+                } else {
+                    mRegisterButton.setBackgroundColor(getResources().getColor(R.color.common_google_signin_btn_text_light_disabled));
+                    mRegisterButton.setTextColor(Color.BLACK);
+                }
+
+                if (password1IsValid)
+                    mPassword1.setTextColor(Color.BLACK);
+                else
+                    mPassword1.setTextColor(Color.parseColor("#FF353A"));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        mPassword2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                password2IsValid = s.toString().equals(mPassword1.getText().toString());
+                if (emailIsValid && nameIsValid && password1IsValid && password2IsValid && phoneIsValid) {
+                    mRegisterButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mRegisterButton.setTextColor(Color.WHITE);
+                } else {
+                    mRegisterButton.setBackgroundColor(getResources().getColor(R.color.common_google_signin_btn_text_light_disabled));
+                    mRegisterButton.setTextColor(Color.BLACK);
+                }
+
+                if (password2IsValid)
+                    mPassword2.setTextColor(Color.BLACK);
+                else
+                    mPassword2.setTextColor(Color.parseColor("#FF353A"));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
     }

@@ -54,85 +54,81 @@
 
         <EditText
             android:id="@+id/editTextName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:layout_gravity="center"
-            android:ems="12"
             android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/editTextPhone"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:layout_gravity="center"
-            android:ems="12"
             android:hint="@string/register_phone_number"
-            android:inputType="phone" />
+            android:inputType="number" />
 
         <EditText
             android:id="@+id/editTextEmail"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:layout_gravity="center"
-            android:ems="12"
             android:inputType="textEmailAddress" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:passwordToggleEnabled="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:layout_gravity="center" >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextPassword1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="12"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:passwordToggleEnabled="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:layout_gravity="center" >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextPassword2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="12"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/btnSetup"
+            android:id="@+id/register_btnSetup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:background="@color/common_google_signin_btn_text_light_disabled"
             android:ems="10"
             android:layout_gravity="center"
             android:text="@string/register" />
