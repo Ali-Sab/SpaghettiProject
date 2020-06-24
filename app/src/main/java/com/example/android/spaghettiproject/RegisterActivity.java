@@ -48,7 +48,7 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
     private boolean nameIsValid = false;
     private boolean password1IsValid = false;
     private boolean password2IsValid = false;
-    private boolean phoneIsValid = false;
+    private boolean phoneIsValid = true;
 
     IMyService iMyService;
 
@@ -208,7 +208,7 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                phoneIsValid = android.util.Patterns.PHONE.matcher(s).matches();
+                phoneIsValid = android.util.Patterns.PHONE.matcher(s).matches() || s.length() == 0;
                 if (emailIsValid && nameIsValid && password1IsValid && password2IsValid && phoneIsValid) {
                     mRegisterButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     mRegisterButton.setTextColor(Color.WHITE);
