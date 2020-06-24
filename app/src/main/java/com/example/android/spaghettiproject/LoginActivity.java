@@ -1,5 +1,6 @@
 package com.example.android.spaghettiproject;
 
+import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
 import androidx.appcompat.app.AlertDialog;
@@ -9,6 +10,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +37,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
     private TextView mLoginText;
     private ProgressBar mProgressBar;
 
+    GlobalActivity global = (GlobalActivity)getApplication(); //creates var ga to set and get email
 
     IMyService iMyService;
 
@@ -77,12 +80,13 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ServerActivity(LoginActivity.this, mEmail.getText().toString(), mPassword.getText().toString(), mProgressBar).execute();
+                global.setEmail(mEmail.getText().toString());
+                new ServerActivity(LoginActivity.this, global.getEmail(), mPassword.getText().toString(), mProgressBar).execute();
             }
         });
 
         Intent intent = getIntent();
-        mEmail.setText(intent.getStringExtra("email"));  //Null case is checked by Android SDK for .setText()
+        //mEmail.setText(intent.getStringExtra("email"));  //Null case is checked by Android SDK for .setText()
     }
 
 
@@ -118,7 +122,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
 
     public void goToProfile(View view) {
         Intent profileIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-        profileIntent.putExtra("email", mEmail.getText().toString());
+        //profileIntent.putExtra("email", mEmail.getText().toString());
         startActivityForResult(profileIntent, AppCodes.ACTIVITY_FINISH_RESULT);
     }
 
@@ -149,7 +153,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    intent.putExtra("email", mEmail.getText().toString());
+                                    //intent.putExtra("email", mEmail.getText().toString());
                                     startActivity(intent);
                                     finish();
                                 }

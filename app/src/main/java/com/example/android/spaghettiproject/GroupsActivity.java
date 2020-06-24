@@ -43,6 +43,8 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
     private RecyclerAdapter mAdapter;
     private ProgressBar progressBar;
 
+    GlobalActivity global = (GlobalActivity)getApplication();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +107,6 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
