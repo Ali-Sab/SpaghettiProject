@@ -6,9 +6,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 
+import android.text.Editable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,9 +37,11 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity implements ServerActivity.AsyncResponse {
     private EditText mEmail;
     private TextInputEditText mPassword;
-    private Button mLogin;
-    private TextView mLoginText;
+    private Button mLoginButton;
+    private TextView mGoToRegister;
     private ProgressBar mProgressBar;
+    private boolean emailIsValid = false;
+    private boolean passwordIsValid = false;
 
 
     IMyService iMyService;
@@ -50,7 +58,6 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
         i.setContentDescription(getResources().getString(R.string.login));
         i.setAdjustViewBounds(true);
         i.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
 
 
         setContentView(R.layout.activity_login);
@@ -70,14 +77,86 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
 
         mEmail = (EditText) findViewById(R.id.editTextEmail);
         mPassword = (TextInputEditText) findViewById(R.id.editTextPassword);
-        mLogin = (Button) findViewById(R.id.btnLogin);
-        mLoginText = (TextView) findViewById(R.id.register_textViewLogin);
+        mLoginButton = (Button) findViewById(R.id.btnLogin);
+        mGoToRegister = (TextView) findViewById(R.id.textViewProfile);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        mLogin.setOnClickListener(new View.OnClickListener() {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        String colorPart = "Register here";
+        String greyPart = "Don't have an account? ";
+
+        SpannableString greyColoredString = new SpannableString(greyPart);
+        SpannableString coloredString = new SpannableString(colorPart);
+        greyColoredString.setSpan(new ForegroundColorSpan(Color.GRAY), 0, greyPart.length(), 0);
+        coloredString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimary)), 0, colorPart.length(), 0);
+        builder.append(greyColoredString);
+        builder.append(coloredString);
+
+        mGoToRegister.setText(builder);
+
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ServerActivity(LoginActivity.this, mEmail.getText().toString(), mPassword.getText().toString(), mProgressBar).execute();
+                if (!emailIsValid)
+                    Toast.makeText(LoginActivity.this, R.string.register_email_invalid, Toast.LENGTH_LONG).show();
+                else if (!passwordIsValid)
+                    Toast.makeText(LoginActivity.this, R.string.register_password_invalid, Toast.LENGTH_LONG).show();
+                else
+                    new ServerActivity(LoginActivity.this, mEmail.getText().toString(), mPassword.getText().toString(), mProgressBar).execute();
+            }
+        });
+
+        mEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                emailIsValid = android.util.Patterns.EMAIL_ADDRESS.matcher(s).matches();
+                if (emailIsValid && passwordIsValid) {
+                    mLoginButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mLoginButton.setTextColor(Color.WHITE);
+                } else {
+                    mLoginButton.setBackgroundColor(getResources().getColor(R.color.common_google_signin_btn_text_light_disabled));
+                    mLoginButton.setTextColor(Color.BLACK);
+                }
+
+                if (emailIsValid)
+                    mEmail.setTextColor(Color.BLACK);
+                else
+                    mEmail.setTextColor(Color.parseColor("#FF353A"));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        mPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                passwordIsValid = s.length() > 5;
+                if (emailIsValid && passwordIsValid) {
+                    mLoginButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mLoginButton.setTextColor(Color.WHITE);
+                } else {
+                    mLoginButton.setBackgroundColor(getResources().getColor(R.color.common_google_signin_btn_text_light_disabled));
+                    mLoginButton.setTextColor(Color.BLACK);
+                }
+
+                if (passwordIsValid)
+                    mPassword.setTextColor(Color.BLACK);
+                else
+                    mPassword.setTextColor(Color.parseColor("#FF353A"));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
 
@@ -154,7 +233,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
                                     finish();
                                 }
                             })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setIcon(getResources().getDrawable(R.drawable.ic_checkmark))
                             .show();
                     break;
                 case "error":

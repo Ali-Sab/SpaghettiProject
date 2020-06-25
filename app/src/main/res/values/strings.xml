@@ -22,5 +22,11 @@
     <string name="register_phone_number">Phone Number (1888999000)</string>
     <string name="login_sign_up">Don\'t have an account? Click here.</string>
     <string name="register_account">Register Account</string>
+    <string name="register_email_invalid">Email is invalid</string>
+    <string name="register_name_invalid">Name must be longer then 2 characters</string>
+    <string name="register_password_invalid">Password must be longer than 5 characters</string>
+    <string name="register_password_not_matching">Passwords must match</string>
+    <string name="register_phone_invalid">Phone number is invalid</string>
+    <string name="register_sign_in">Already have an account? Login here.</string>
 
 </resources>

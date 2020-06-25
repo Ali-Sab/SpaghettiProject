@@ -17,6 +17,8 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
     private EditText mPhoneNumber;
     private Button mRegisterButton;
     private TextView mLogin;
+    private TextView mGoToLogin;
     private String password;
     private EditText mName;
     private ProgressBar mProgressBar;
@@ -70,6 +73,7 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
         mLogin = (TextView) findViewById(R.id.register_textViewLogin);
         mName = (EditText) findViewById(R.id.editTextName);
         mPhoneNumber = (EditText) findViewById(R.id.editTextPhone);
+        mGoToLogin = (TextView) findViewById(R.id.register_textViewLogin);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mRegisterButton = (Button) findViewById(R.id.register_btnSetup);
 
@@ -115,6 +119,18 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
 
         mPassword2.setHint(builder);
 
+        builder = new SpannableStringBuilder();
+        redPart = "Login here";
+        greyPart = "Already have an account? ";
+        greyColoredString = new SpannableString(greyPart);
+        greyColoredString.setSpan(new ForegroundColorSpan(Color.GRAY), 0, greyPart.length(), 0);
+        redColoredString = new SpannableString(redPart);
+        redColoredString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimary)), 0, redPart.length(), 0);
+        builder.append(greyColoredString);
+        builder.append(redColoredString);
+
+        mGoToLogin.setText(builder);
+
 
         Intent intent = getIntent();
         mEmail.setText(intent.getStringExtra("email"));
@@ -133,15 +149,15 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
             @Override
             public void onClick(View v) {
                 if (!emailIsValid)
-                    Toast.makeText(RegisterActivity.this, "Email is invalid", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterActivity.this, R.string.register_email_invalid, Toast.LENGTH_LONG).show();
                 else if (!nameIsValid)
-                    Toast.makeText(RegisterActivity.this, "Name must be longer then 2 characters", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterActivity.this, R.string.register_name_invalid, Toast.LENGTH_LONG).show();
                 else if (!password1IsValid)
-                    Toast.makeText(RegisterActivity.this, "Password must be longer than 5 characters", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterActivity.this, R.string.register_password_invalid, Toast.LENGTH_LONG).show();
                 else if (!password2IsValid)
-                    Toast.makeText(RegisterActivity.this, "Passwords must match", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterActivity.this, R.string.register_password_not_matching, Toast.LENGTH_LONG).show();
                 else if (!phoneIsValid)
-                    Toast.makeText(RegisterActivity.this, "Phone number is invalid", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterActivity.this, R.string.register_phone_invalid, Toast.LENGTH_LONG).show();
                 else
                     new ServerActivity(RegisterActivity.this, mEmail.getText().toString(), mName.getText().toString(), mPassword1.getText().toString(), mProgressBar).execute(mName.getText().toString());
             }
@@ -281,6 +297,27 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
             public void afterTextChanged(Editable s) {
             }
         });
+    }
+
+    @Override
+    //Once user selects the options menu
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.login_menu, menu);
+        return true;
+    }
+
+    @Override
+    //Once an options menu is selected
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_contact:
+                Intent contactIntent = new Intent(RegisterActivity.this, ContactUsActivity.class);
+                startActivity(contactIntent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
