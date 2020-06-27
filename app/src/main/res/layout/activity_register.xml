@@ -61,6 +61,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:layout_gravity="center"
+            android:contentDescription="Full Name"
             android:inputType="textPersonName" />
 
         <EditText
@@ -73,7 +74,7 @@
             android:layout_marginTop="8dp"
             android:layout_gravity="center"
             android:hint="@string/register_phone_number"
-            android:inputType="number" />
+            android:inputType="phone" />
 
         <EditText
             android:id="@+id/editTextEmail"
@@ -84,6 +85,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:layout_gravity="center"
+            android:contentDescription="Email"
             android:inputType="textEmailAddress" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -100,6 +102,7 @@
                 android:id="@+id/editTextPassword1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:contentDescription="Password"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -117,6 +120,7 @@
                 android:id="@+id/editTextPassword2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:contentDescription="Confirm password"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -139,6 +143,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:padding="12dp"
+            android:gravity="center"
             android:layout_gravity="center"
             android:clickable="true"
             android:focusable="true"

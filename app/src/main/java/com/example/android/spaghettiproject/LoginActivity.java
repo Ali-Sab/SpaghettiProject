@@ -101,8 +101,20 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
                     Toast.makeText(LoginActivity.this, R.string.register_email_invalid, Toast.LENGTH_LONG).show();
                 else if (!passwordIsValid)
                     Toast.makeText(LoginActivity.this, R.string.register_password_invalid, Toast.LENGTH_LONG).show();
-                else
-                    new ServerActivity(LoginActivity.this, mEmail.getText().toString(), mPassword.getText().toString(), mProgressBar).execute();
+                else {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    try {
+                        JSONObject requestBody = new JSONObject();
+                        requestBody.put("email", mEmail.getText().toString());
+                        requestBody.put("password", mPassword.getText().toString());
+
+                        new ServerActivity(LoginActivity.this, AppCodes.login).execute(requestBody);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(LoginActivity.this, "Technical error, please try again", Toast.LENGTH_LONG).show();
+                    }
+                }
             }
         });
 
@@ -214,57 +226,66 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
     }
 
     @Override
-    public void processFinish(String output) {
-        try {
-            JSONObject response = new JSONObject(output);
-            switch (response.getString("statusMessage")) {
-                case "success":
-                    Toast.makeText(LoginActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
-                    new AlertDialog.Builder(LoginActivity.this)
-                            .setTitle("Success!")
-                            .setMessage("You're now logged in")
-                            .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() { //can probably change to .setNeutralButton
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    intent.putExtra("email", mEmail.getText().toString());
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            })
-                            .setIcon(getResources().getDrawable(R.drawable.ic_checkmark))
-                            .show();
-                    break;
-                case "error":
-                    switch (response.getString("errorMessage")) {
-                        case "Email does not exist":
-                            new AlertDialog.Builder(LoginActivity.this)
-                                    .setTitle("Login Error")
-                                    .setMessage("Email does not exist.")
-                                    .setNegativeButton(android.R.string.ok, null)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show();
-                            break;
-                        case "Wrong password":
-                            new AlertDialog.Builder(LoginActivity.this)
-                                    .setTitle("Login Error")
-                                    .setMessage("Password is incorrect.")
-                                    .setNegativeButton(android.R.string.ok, null)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show();
-                            break;
-                        case "Missing password":
-                            Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_LONG).show();
-                            break;
-                        case "Request failed to send":
-                            Toast.makeText(LoginActivity.this, "Technical error, please try again", Toast.LENGTH_LONG).show();
-                            break;
-                    }
-                    break;
+    public void processFinish(JSONObject response) {
+        mProgressBar.setVisibility(View.INVISIBLE);
+        if (response != null) {
+            try {
+                switch (response.getString("statusMessage")) {
+                    case "success":
+                        new AlertDialog.Builder(LoginActivity.this)
+                                .setTitle("Success!")
+                                .setMessage("You're now logged in")
+                                .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() { //can probably change to .setNeutralButton
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.putExtra("email", mEmail.getText().toString());
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                })
+                                .setIcon(getResources().getDrawable(R.drawable.ic_checkmark))
+                                .show();
+                        break;
+                    case "error":
+                        switch (response.getString("errorMessage")) {
+                            case "Email does not exist":
+                                new AlertDialog.Builder(LoginActivity.this)
+                                        .setTitle("Login Error")
+                                        .setMessage("Email does not exist.")
+                                        .setNegativeButton(android.R.string.ok, null)
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .show();
+                                break;
+                            case "Wrong password":
+                                new AlertDialog.Builder(LoginActivity.this)
+                                        .setTitle("Login Error")
+                                        .setMessage("Password is incorrect.")
+                                        .setNegativeButton(android.R.string.ok, null)
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .show();
+                                break;
+                            case "Missing password":
+                                Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_LONG).show();
+                                break;
+                            case "Request failed to send":
+                                Toast.makeText(LoginActivity.this, "Technical error occurred, please try again", Toast.LENGTH_LONG).show();
+                                break;
+                        }
+                        break;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+        } else {
+            new AlertDialog.Builder(LoginActivity.this)
+                    .setTitle("Login Error")
+                    .setMessage("Technical error occurred, please try again")
+                    .setNegativeButton(android.R.string.ok, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
     }
 }
