@@ -31,7 +31,6 @@ import com.example.android.spaghettiproject.Retrofit.RetrofitClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import retrofit2.Retrofit;
 
@@ -53,7 +52,7 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
     private boolean password2IsValid = false;
     private boolean phoneIsValid = true;
 
-    IMyService iMyService;
+    //IMyService iMyService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +63,8 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Retrofit retrofitClient = RetrofitClient.getInstance();
-        iMyService = retrofitClient.create(IMyService.class);
+        //Retrofit retrofitClient = RetrofitClient.getInstance();
+        //iMyService = retrofitClient.create(IMyService.class);
 
         mEmail = (EditText) findViewById(R.id.editTextEmail);
         mPassword1 = (EditText) findViewById(R.id.editTextPassword1);
@@ -76,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
         mGoToLogin = (TextView) findViewById(R.id.register_textViewLogin);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mRegisterButton = (Button) findViewById(R.id.register_btnSetup);
+
 
         String redPart = "* ";
         String greyPart = "Name";
@@ -168,6 +168,7 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
 
                         if (mPhoneNumber.getText().toString().length() > 0)
                             requestBody.put("phone", mPhoneNumber.getText().toString());
+
 
                         new ServerActivity(RegisterActivity.this, AppCodes.register).execute(requestBody);
                     } catch (Exception e) {

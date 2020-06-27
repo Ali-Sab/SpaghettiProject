@@ -1,5 +1,6 @@
 package com.example.android.spaghettiproject;
 
+import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
 import androidx.appcompat.app.AlertDialog;
@@ -43,6 +44,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
     private boolean emailIsValid = false;
     private boolean passwordIsValid = false;
 
+    GlobalActivity global = (GlobalActivity)getApplication(); //creates var ga to set and get email
 
     IMyService iMyService;
 

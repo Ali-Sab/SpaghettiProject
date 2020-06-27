@@ -22,11 +22,11 @@ public class GroupsActivity extends AppCompatActivity {
 
     public static final String EXTRA_MESSAGE = "com.example.android.spaghettiproject.extra.MESSAGE";
     private static Button button;
-
     private final LinkedList<String> mGroupList = new LinkedList<>();
-
     private RecyclerView mRecyclerView;
     private RecyclerAdapter mAdapter;
+
+    GlobalActivity global = (GlobalActivity)getApplication();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +51,7 @@ public class GroupsActivity extends AppCompatActivity {
 
         mGroupList.addLast("Sample 1");
         mGroupList.addLast("test???");
+
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mAdapter = new RecyclerAdapter(this, mGroupList);
