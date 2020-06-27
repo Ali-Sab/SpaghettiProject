@@ -166,6 +166,9 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
                         requestBody.put("name", mName.getText().toString());
                         requestBody.put("password", mPassword1.getText().toString());
 
+                        if (mPhoneNumber.getText().toString().length() > 0)
+                            requestBody.put("phone", mPhoneNumber.getText().toString());
+
                         new ServerActivity(RegisterActivity.this, AppCodes.register).execute(requestBody);
                     } catch (Exception e) {
                         e.printStackTrace();
