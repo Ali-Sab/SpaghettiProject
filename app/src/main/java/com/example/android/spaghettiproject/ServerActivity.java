@@ -76,6 +76,8 @@ public class ServerActivity extends AsyncTask<String, Void, String> {
                 }else{
                     urlParams = "API_KEY=" + ServerAPIKey + "&email=" + email;
                 }
+            }else if (delegate.getClass().getSimpleName().equals("ListsActivity")){
+                urlParams = "API_KEY=" + URLEncoder.encode(ServerAPIKey, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8") + "&groupId=" + URLEncoder.encode(password, "UTF-8");
             }
         }catch (UnsupportedEncodingException e) {
             Log.d("Error", e.toString());

@@ -3,7 +3,7 @@ package com.example.android.spaghettiproject;
 import android.app.Application;
 
 public class GlobalActivity extends Application {
-    private String email;
+    private String email = "";
 
     public String getEmail() {
         return email;

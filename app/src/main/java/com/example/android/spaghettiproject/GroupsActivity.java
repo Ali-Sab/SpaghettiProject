@@ -36,12 +36,11 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
 
     public static final String EXTRA_MESSAGE = "com.example.android.spaghettiproject.extra.MESSAGE";
     private static Button button;
-
     private final LinkedList<String> mGroupList = new LinkedList<>();
-
     private RecyclerView mRecyclerView;
     private RecyclerAdapter mAdapter;
     private ProgressBar progressBar;
+    private JSONArray dataArray;
 
     GlobalActivity global = (GlobalActivity)getApplication();
 
@@ -60,7 +59,8 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        new ServerActivity(GroupsActivity.this, getIntent().getStringExtra("email"), progressBar).execute();
+
+        new ServerActivity(GroupsActivity.this, global.getEmail(), progressBar).execute();
 
 
         FloatingActionButton fabAdd = findViewById(R.id.fab);
@@ -82,7 +82,7 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
                         if(m_Text.length() > 0) {
                             //mGroupList.add(m_Text);
                             //mAdapter.notifyDataSetChanged();
-                            new ServerActivity(GroupsActivity.this, getIntent().getStringExtra("email"), m_Text, progressBar).execute();
+                            new ServerActivity(GroupsActivity.this, global.getEmail(), m_Text, progressBar).execute();
 
                         }else{
                             dialog.cancel();
@@ -150,7 +150,7 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
                             break;
                         case "Successfully fetched groups":
                             //Get groups
-                            JSONArray dataArray = response.getJSONArray("data");
+                            dataArray = response.getJSONArray("data");
                             mGroupList.clear();
                             for(int i = 0; i < dataArray.length(); i++) {
                                 JSONObject data = dataArray.getJSONObject(i);

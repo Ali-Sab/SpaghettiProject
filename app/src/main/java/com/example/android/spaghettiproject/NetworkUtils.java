@@ -44,8 +44,8 @@ public class NetworkUtils {
             }
 
         }else if (activityName.equals("ListsActivity")) {
-            requestURL += "lists";
-            requestMethod = "POST";
+            requestURL += "lists?" + urlParameters;
+            requestMethod = "GET";
         }
 
         HttpsURLConnection conn = null;

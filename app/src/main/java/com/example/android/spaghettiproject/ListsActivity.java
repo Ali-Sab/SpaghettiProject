@@ -60,7 +60,7 @@ public class ListsActivity extends AppCompatActivity implements  ServerActivity.
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         String sessionId = getIntent().getStringExtra(GroupsActivity.EXTRA_MESSAGE); //group item
-        new ServerActivity(ListsActivity.this, getIntent().getStringExtra("email"), sessionId, progressBar).execute();
+        new ServerActivity(ListsActivity.this, global.getEmail(), sessionId, progressBar).execute();
 
     }
 
