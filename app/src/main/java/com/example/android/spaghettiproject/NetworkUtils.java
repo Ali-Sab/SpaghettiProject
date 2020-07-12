@@ -6,6 +6,9 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -23,44 +26,36 @@ public class NetworkUtils {
     //URL
     private static final String URL = "https://spaghetti-project.herokuapp.com/";
 
-    static String getInfo(String activityName, String urlParameters){
-        if (urlParameters == null)
-            return "Params are empty";
-        String requestURL = URL;
-        if (activityName.equals("RegisterActivity"))
-            requestURL += "register";
-        else if (activityName.equals("LoginActivity")) {
-            requestURL += "login";
-        }
-
+    static JSONObject getInfo(String path, JSONObject requestBody){
+        JSONObject responseJSON = null;
         HttpsURLConnection conn = null;
-        BufferedReader reader = null;
-        String response = null;
 
-        try{
-            //byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
-            //int postDataLength = postData.length;
-            URL url = new URL(requestURL);
+        try {
+            URL targetURL = new URL(URL + path);
+            String response = null;
 
-            conn = (HttpsURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.setRequestMethod("POST");
+            conn = (HttpsURLConnection) targetURL.openConnection();
 
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            conn.setRequestProperty("charset", "utf-8");
-            conn.setRequestProperty("Content-Length", Integer.toString(urlParameters.length()));
-            conn.setUseCaches(false);
+            if (requestBody != null) {
+                String request = requestBody.toString();
 
-            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-            wr.writeBytes(urlParameters);
+                conn.setDoOutput(true);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("charset", "utf-8");
+                conn.setRequestProperty("Content-Length", Integer.toString(request.length()));
 
+                Log.d("Request: ", request);                                                         /// TEMPORARY!!! PLEASE REMOVE
 
-            wr.flush();
-            wr.close();
+                DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+                wr.writeBytes(request);
+                wr.flush();
+                wr.close();
+            }
+
             Log.d(LOG_TAG, Integer.toString(conn.getResponseCode()));
             Log.d(LOG_TAG, conn.getResponseMessage());
-//            Log.d(LOG_TAG, "getContent()=" + conn.getContent().toString());
+
             BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             response = "";
             String lineRead = input.readLine();
@@ -68,63 +63,18 @@ public class NetworkUtils {
                 response += (lineRead);
                 lineRead = input.readLine();
             }
-
             input.close();
 
             Log.d(LOG_TAG, "response:\n" + response);
+            responseJSON = new JSONObject(response);
 
-//            //build request URI
-//            Uri builtURI = Uri.parse(URL).buildUpon().build();
-//
-//            //Convert Uri to URL
-//            URL requestURL = new URL(builtURI.toString());
-//
-//            //Open URL connection
-//            urlConnection = (HttpsURLConnection) requestURL.openConnection();
-//
-//            urlConnection.setRequestMethod("POST");
-//            urlConnection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-//            urlConnection.connect();
-//
-//            //Get the inputstream
-//            InputStream inputStream = urlConnection.getInputStream();
-//
-//            //Creat a buffered reader from that input stream.
-//            reader = new BufferedReader(new InputStreamReader(inputStream));
-//
-//            //Use a StringBuilder to hold the incomin response.
-//            StringBuilder builder = new StringBuilder();
-//
-//            String line;
-//            while((line = reader.readLine()) != null){
-//                builder.append(line);
-//                //
-//                builder.append("\n");
-//
-//                //May be in wrong spot
-//                if(builder.length() == 0){
-//                    //Stream was empty. No point in parsing
-//                    return null;
-//                }
-//
-//
-//            }
-//
-//            //May be in wrong spot
-//            JSONString = builder.toString();
-//            JSONString = "hi";
-//
-
-        }catch(IOException e){
+        } catch(Exception e){
             e.printStackTrace();
         } finally {
-            if (conn != null) {
+            if (conn != null)
                 conn.disconnect();
-            }
         }
 
-        return response;
+        return responseJSON;
     }
-
-
 }
