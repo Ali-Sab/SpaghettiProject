@@ -32,8 +32,6 @@ public class ListsActivity extends AppCompatActivity implements  ServerActivity.
     private RecyclerView.Adapter mAdapter;
     private ProgressBar progressBar;
 
-    GlobalActivity global = (GlobalActivity)getApplication();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +58,7 @@ public class ListsActivity extends AppCompatActivity implements  ServerActivity.
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         String sessionId = getIntent().getStringExtra(GroupsActivity.EXTRA_MESSAGE); //group item
-        new ServerActivity(ListsActivity.this, global.getEmail(), sessionId, progressBar).execute();
+        //new ServerActivity(ListsActivity.this, getIntent().getStringExtra("email"), sessionId, progressBar).execute();
 
     }
 
@@ -98,9 +96,8 @@ public class ListsActivity extends AppCompatActivity implements  ServerActivity.
         return super.onOptionsItemSelected(item);
     }
 
-    public void processFinish(String output) {
+    public void processFinish(JSONObject response) {
         try {
-            JSONObject response = new JSONObject(output);
             switch (response.getString("statusMessage")) {
                 case "success":
                     switch (response.getString("successMessage")) {

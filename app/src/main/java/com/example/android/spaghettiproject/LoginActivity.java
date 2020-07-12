@@ -7,10 +7,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 
-import android.provider.Settings;
+import android.text.Editable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,9 +38,11 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity implements ServerActivity.AsyncResponse {
     private EditText mEmail;
     private TextInputEditText mPassword;
-    private Button mLogin;
-    private TextView mLoginText;
+    private Button mLoginButton;
+    private TextView mGoToRegister;
     private ProgressBar mProgressBar;
+    private boolean emailIsValid = false;
+    private boolean passwordIsValid = false;
 
     GlobalActivity global = (GlobalActivity)getApplication(); //creates var ga to set and get email
 
@@ -55,7 +62,6 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
         i.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
 
-
         setContentView(R.layout.activity_login);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
@@ -73,20 +79,103 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
 
         mEmail = (EditText) findViewById(R.id.editTextEmail);
         mPassword = (TextInputEditText) findViewById(R.id.editTextPassword);
-        mLogin = (Button) findViewById(R.id.btnLogin);
-        mLoginText = (TextView) findViewById(R.id.register_textViewLogin);
+        mLoginButton = (Button) findViewById(R.id.btnLogin);
+        mGoToRegister = (TextView) findViewById(R.id.textViewProfile);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        mLogin.setOnClickListener(new View.OnClickListener() {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        String colorPart = "Register here";
+        String greyPart = "Don't have an account? ";
+
+        SpannableString greyColoredString = new SpannableString(greyPart);
+        SpannableString coloredString = new SpannableString(colorPart);
+        greyColoredString.setSpan(new ForegroundColorSpan(Color.GRAY), 0, greyPart.length(), 0);
+        coloredString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPrimary)), 0, colorPart.length(), 0);
+        builder.append(greyColoredString);
+        builder.append(coloredString);
+
+        mGoToRegister.setText(builder);
+
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                global.setEmail(mEmail.getText().toString());
-                new ServerActivity(LoginActivity.this, global.getEmail(), mPassword.getText().toString(), mProgressBar).execute();
+                if (!emailIsValid)
+                    Toast.makeText(LoginActivity.this, R.string.register_email_invalid, Toast.LENGTH_LONG).show();
+                else if (!passwordIsValid)
+                    Toast.makeText(LoginActivity.this, R.string.register_password_invalid, Toast.LENGTH_LONG).show();
+                else {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    try {
+                        JSONObject requestBody = new JSONObject();
+                        requestBody.put("email", mEmail.getText().toString());
+                        requestBody.put("password", mPassword.getText().toString());
+
+                        new ServerActivity(LoginActivity.this, AppCodes.login).execute(requestBody);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(LoginActivity.this, "Technical error, please try again", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
+        mEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                emailIsValid = android.util.Patterns.EMAIL_ADDRESS.matcher(s).matches();
+                if (emailIsValid && passwordIsValid) {
+                    mLoginButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mLoginButton.setTextColor(Color.WHITE);
+                } else {
+                    mLoginButton.setBackgroundColor(getResources().getColor(R.color.common_google_signin_btn_text_light_disabled));
+                    mLoginButton.setTextColor(Color.BLACK);
+                }
+
+                if (emailIsValid)
+                    mEmail.setTextColor(Color.BLACK);
+                else
+                    mEmail.setTextColor(Color.parseColor("#FF353A"));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        mPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                passwordIsValid = s.length() > 5;
+                if (emailIsValid && passwordIsValid) {
+                    mLoginButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mLoginButton.setTextColor(Color.WHITE);
+                } else {
+                    mLoginButton.setBackgroundColor(getResources().getColor(R.color.common_google_signin_btn_text_light_disabled));
+                    mLoginButton.setTextColor(Color.BLACK);
+                }
+
+                if (passwordIsValid)
+                    mPassword.setTextColor(Color.BLACK);
+                else
+                    mPassword.setTextColor(Color.parseColor("#FF353A"));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
 
         Intent intent = getIntent();
-        //mEmail.setText(intent.getStringExtra("email"));  //Null case is checked by Android SDK for .setText()
+        mEmail.setText(intent.getStringExtra("email"));  //Null case is checked by Android SDK for .setText()
     }
 
 
@@ -122,7 +211,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
 
     public void goToProfile(View view) {
         Intent profileIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-        //profileIntent.putExtra("email", mEmail.getText().toString());
+        profileIntent.putExtra("email", mEmail.getText().toString());
         startActivityForResult(profileIntent, AppCodes.ACTIVITY_FINISH_RESULT);
     }
 
@@ -139,57 +228,66 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
     }
 
     @Override
-    public void processFinish(String output) {
-        try {
-            JSONObject response = new JSONObject(output);
-            switch (response.getString("statusMessage")) {
-                case "success":
-                    Toast.makeText(LoginActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
-                    new AlertDialog.Builder(LoginActivity.this)
-                            .setTitle("Success!")
-                            .setMessage("You're now logged in")
-                            .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() { //can probably change to .setNeutralButton
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    //intent.putExtra("email", mEmail.getText().toString());
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-                    break;
-                case "error":
-                    switch (response.getString("errorMessage")) {
-                        case "Email does not exist":
-                            new AlertDialog.Builder(LoginActivity.this)
-                                    .setTitle("Login Error")
-                                    .setMessage("Email does not exist.")
-                                    .setNegativeButton(android.R.string.ok, null)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show();
-                            break;
-                        case "Wrong password":
-                            new AlertDialog.Builder(LoginActivity.this)
-                                    .setTitle("Login Error")
-                                    .setMessage("Password is incorrect.")
-                                    .setNegativeButton(android.R.string.ok, null)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show();
-                            break;
-                        case "Missing password":
-                            Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_LONG).show();
-                            break;
-                        case "Request failed to send":
-                            Toast.makeText(LoginActivity.this, "Technical error, please try again", Toast.LENGTH_LONG).show();
-                            break;
-                    }
-                    break;
+    public void processFinish(JSONObject response) {
+        mProgressBar.setVisibility(View.INVISIBLE);
+        if (response != null) {
+            try {
+                switch (response.getString("statusMessage")) {
+                    case "success":
+                        new AlertDialog.Builder(LoginActivity.this)
+                                .setTitle("Success!")
+                                .setMessage("You're now logged in")
+                                .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() { //can probably change to .setNeutralButton
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.putExtra("email", mEmail.getText().toString());
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                })
+                                .setIcon(getResources().getDrawable(R.drawable.ic_checkmark))
+                                .show();
+                        break;
+                    case "error":
+                        switch (response.getString("errorMessage")) {
+                            case "Email does not exist":
+                                new AlertDialog.Builder(LoginActivity.this)
+                                        .setTitle("Login Error")
+                                        .setMessage("Email does not exist.")
+                                        .setNegativeButton(android.R.string.ok, null)
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .show();
+                                break;
+                            case "Wrong password":
+                                new AlertDialog.Builder(LoginActivity.this)
+                                        .setTitle("Login Error")
+                                        .setMessage("Password is incorrect.")
+                                        .setNegativeButton(android.R.string.ok, null)
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .show();
+                                break;
+                            case "Missing password":
+                                Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_LONG).show();
+                                break;
+                            case "Request failed to send":
+                                Toast.makeText(LoginActivity.this, "Technical error occurred, please try again", Toast.LENGTH_LONG).show();
+                                break;
+                        }
+                        break;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+        } else {
+            new AlertDialog.Builder(LoginActivity.this)
+                    .setTitle("Login Error")
+                    .setMessage("Technical error occurred, please try again")
+                    .setNegativeButton(android.R.string.ok, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
     }
 }

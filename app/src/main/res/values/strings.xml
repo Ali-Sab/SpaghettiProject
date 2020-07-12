@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Spaghetti Project</string>
     <string name="spaghetti_login">Spaghetti Login</string>
-    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_in">Log in</string>
     <string name="login_email">Email</string>
     <string name="login_password">Password</string>
     <string name="login">Login</string>
@@ -16,15 +16,17 @@
     <string name="log_out">Log Out</string>
     <string name="contact_text">Please send us an email if you have questions and feedback! We are eager to improve the quality of our app, and in order to do so, your issues will assist us greatly.
 
-    email@mail.ca</string>
+    spaghettiproject2@gmail.com</string>
     <string name="register">Register</string>
     <string name="register_description">"In order to use this app, you must create an account so you can share your lists with your friends, family and more!</string>
-    <string name="register_name">* Name</string>
-    <string name="register_confirm_password">* Confirm Password</string>
-    <string name="register_phone_number">Phone Number</string>
-    <string name="register_email">* Email</string>
-    <string name="register_password">* Password</string>
+    <string name="register_phone_number">Phone Number (1888999000)</string>
     <string name="login_sign_up">Don\'t have an account? Click here.</string>
     <string name="register_account">Register Account</string>
+    <string name="register_email_invalid">Email is invalid</string>
+    <string name="register_name_invalid">Name must be longer then 2 characters</string>
+    <string name="register_password_invalid">Password must be longer than 5 characters</string>
+    <string name="register_password_not_matching">Passwords must match</string>
+    <string name="register_phone_invalid">Phone number is invalid</string>
+    <string name="register_sign_in">Have an account? Log in</string>
 
 </resources>
