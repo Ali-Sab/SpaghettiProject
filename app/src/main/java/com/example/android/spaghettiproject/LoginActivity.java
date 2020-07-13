@@ -44,8 +44,6 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
     private boolean emailIsValid = false;
     private boolean passwordIsValid = false;
 
-    GlobalActivity global = (GlobalActivity)getApplication(); //creates var ga to set and get email
-
     IMyService iMyService;
 
     //Animation

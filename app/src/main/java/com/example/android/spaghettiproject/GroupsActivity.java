@@ -42,7 +42,6 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
     private ProgressBar progressBar;
     private JSONArray dataArray;
 
-    GlobalActivity global = (GlobalActivity)getApplication();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +59,7 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
 
-        new ServerActivity(GroupsActivity.this, global.getEmail(), progressBar).execute();
+        //new ServerActivity(GroupsActivity.this, getIntent().getStringExtra("email"), progressBar).execute();
 
 
         FloatingActionButton fabAdd = findViewById(R.id.fab);
@@ -82,7 +81,7 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
                         if(m_Text.length() > 0) {
                             //mGroupList.add(m_Text);
                             //mAdapter.notifyDataSetChanged();
-                            new ServerActivity(GroupsActivity.this, global.getEmail(), m_Text, progressBar).execute();
+                            //new ServerActivity(GroupsActivity.this, getIntent().getStringExtra("email"), m_Text, progressBar).execute();
 
                         }else{
                             dialog.cancel();
@@ -136,9 +135,8 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
         return super.onOptionsItemSelected(item);
     }
 
-    public void processFinish(String output) {
+    public void processFinish(JSONObject response) {
         try {
-            JSONObject response = new JSONObject(output);
             switch (response.getString("statusMessage")) {
                 case "success":
                     switch (response.getString("successMessage")) {
