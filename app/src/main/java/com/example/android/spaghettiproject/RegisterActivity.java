@@ -204,6 +204,11 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
 
             @Override
             public void afterTextChanged(Editable s) {
+                String trimmedString = s.toString().trim();
+                if (!trimmedString.equals(s.toString())) {
+                    mEmail.setText(trimmedString);
+                    mEmail.setSelection(trimmedString.length());
+                }
             }
         });
 
