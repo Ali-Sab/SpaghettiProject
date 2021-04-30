@@ -16,6 +16,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -125,6 +126,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                s = (CharSequence) s.toString().trim();
                 emailIsValid = android.util.Patterns.EMAIL_ADDRESS.matcher(s).matches();
                 if (emailIsValid && passwordIsValid) {
                     mLoginButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -138,10 +140,16 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
                     mEmail.setTextColor(Color.BLACK);
                 else
                     mEmail.setTextColor(Color.parseColor("#FF353A"));
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                String trimmedString = s.toString().trim();
+                if (!trimmedString.equals(s.toString())) {
+                    mEmail.setText(trimmedString);
+                    mEmail.setSelection(trimmedString.length());
+                }
             }
         });
 
