@@ -75,7 +75,7 @@
             android:layout_gravity="center"
 
             android:hint="@string/register_phone_number"
-            android:inputType="number" />
+            android:inputType="phone" />
 
         <EditText
             android:id="@+id/editTextEmail"
