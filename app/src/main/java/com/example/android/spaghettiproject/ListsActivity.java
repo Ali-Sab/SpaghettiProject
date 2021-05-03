@@ -32,8 +32,6 @@ public class ListsActivity extends AppCompatActivity implements  ServerActivity.
     private RecyclerView.Adapter mAdapter;
     private ProgressBar progressBar;
 
-    GlobalActivity global = (GlobalActivity)getApplication();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
