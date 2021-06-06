@@ -134,6 +134,11 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
 
         Intent intent = getIntent();
         mEmail.setText(intent.getStringExtra("email"));
+        emailIsValid = android.util.Patterns.EMAIL_ADDRESS.matcher(mEmail.getText().toString()).matches();
+        if (emailIsValid)
+            mEmail.setTextColor(Color.BLACK);
+        else
+            mEmail.setTextColor(Color.parseColor("#FF353A"));
 
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -274,6 +279,18 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 password1IsValid = s.length() > 5;
+                password2IsValid = s.toString().equals(mPassword2.getText().toString());
+
+                if (password1IsValid)
+                    mPassword1.setTextColor(Color.BLACK);
+                else
+                    mPassword1.setTextColor(Color.parseColor("#FF353A"));
+
+                if (password2IsValid)
+                    mPassword2.setTextColor(Color.BLACK);
+                else
+                    mPassword2.setTextColor(Color.parseColor("#FF353A"));
+
                 if (emailIsValid && nameIsValid && password1IsValid && password2IsValid && phoneIsValid) {
                     mRegisterButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     mRegisterButton.setTextColor(Color.WHITE);
@@ -281,11 +298,6 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
                     mRegisterButton.setBackgroundColor(getResources().getColor(R.color.common_google_signin_btn_text_light_disabled));
                     mRegisterButton.setTextColor(Color.BLACK);
                 }
-
-                if (password1IsValid)
-                    mPassword1.setTextColor(Color.BLACK);
-                else
-                    mPassword1.setTextColor(Color.parseColor("#FF353A"));
             }
 
             @Override
