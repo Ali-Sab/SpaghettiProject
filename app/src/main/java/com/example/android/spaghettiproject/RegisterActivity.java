@@ -360,7 +360,7 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
                     case "success":
                         new AlertDialog.Builder(RegisterActivity.this)
                                 .setTitle("Success!")
-                                .setMessage("Please login with your new account")
+                                .setMessage("Please confirm your email address")
                                 .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
