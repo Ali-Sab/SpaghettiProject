@@ -59,6 +59,13 @@ public class GroupsActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
        // ItemTouchHelper helper = new ItemTouchHelper(new My ItemTouchCallback(mAdapter));
         //helper.attachToRecyclerView(recyclerView);
+
+        Intent intent = getIntent();
+        String email = intent.getStringExtra("email");
+        String autoLogin = intent.getStringExtra("autoLogin");
+        if (autoLogin != null && autoLogin.equals("true")) {
+            Toast.makeText(GroupsActivity.this, "Logged in as " + email, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

@@ -19,15 +19,20 @@
         app:layout_constraintTop_toBottomOf="@id/textViewLogin"
         app:layout_constraintVertical_bias="0.15">
 
-        <EditText
-            android:id="@+id/editTextEmail"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="50dp"
             android:layout_marginBottom="10dp"
-            android:autofillHints=".AUTOFILL_HINT_USERNAME"
-            android:hint="@string/login_email"
-            android:inputType="textEmailAddress" />
+            tools:layout_editor_absoluteX="206dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=".AUTOFILL_HINT_USERNAME"
+                android:hint="@string/login_email"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -35,14 +40,12 @@
             android:layout_marginHorizontal="50dp"
             app:passwordToggleEnabled="true"
             tools:layout_editor_absoluteX="206dp">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/login_password"
                 android:inputType="textPassword" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <CheckBox
@@ -50,10 +53,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:checked="false"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="keepLoggedIn"
-            android:text="Keep me logged in." />
+            android:text="@string/keep_me_logged_in" />
 
         <Button
             android:id="@+id/btnLogin"
