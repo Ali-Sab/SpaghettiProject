@@ -3,15 +3,22 @@ package com.example.android.spaghettiproject;
 import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.hardware.biometrics.BiometricPrompt;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.biometric.BiometricManager;
+import androidx.core.content.ContextCompat;
 
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -37,6 +44,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Objects;
+import java.util.concurrent.Executor;
+
+import static com.example.android.spaghettiproject.AppCodes.ACTIVITY_FINISH_RESULT;
 
 //import retrofit2.Retrofit;
 
@@ -47,12 +57,20 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
     private TextView mGoToRegister;
     private ProgressBar mProgressBar;
     private CheckBox mKeepLoggedIn;
+    private Button mbiometricLoginButton;
     private boolean emailIsValid = false;
     private boolean passwordIsValid = false;
     private boolean keepLoggedIn = false;
+    private boolean biometricEnabled = false;
     private boolean attempedAutoLogin = false;
     private SharedPreferences mPreferences;
     private final String sharedPrepFile = "com.example.android.spaghettiproject";
+
+    // Biometric authentication
+    private Executor executor;
+    private androidx.biometric.BiometricPrompt biometricPrompt;
+    private androidx.biometric.BiometricPrompt.PromptInfo promptInfo;
+
 
     GlobalActivity global = (GlobalActivity)getApplication(); //creates var ga to set and get email
 
@@ -89,10 +107,17 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
         mGoToRegister = (TextView) findViewById(R.id.textViewProfile);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mKeepLoggedIn = (CheckBox) findViewById(R.id.checkBoxLogin);
+        mbiometricLoginButton = findViewById(R.id.biometric_login);
 
         mPreferences = getSharedPreferences(sharedPrepFile, MODE_PRIVATE);
         if (mPreferences != null) {
             keepLoggedIn = mPreferences.getBoolean("keepLoggedIn", false);
+            biometricEnabled = mPreferences.getBoolean("useBiometric", false);
+
+            if (biometricEnabled)
+                mbiometricLoginButton.setVisibility(View.VISIBLE);
+            else
+                mbiometricLoginButton.setVisibility(View.INVISIBLE);
 
             if (keepLoggedIn) {
                 String email = mPreferences.getString("savedEmail", "");
@@ -119,6 +144,86 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
             }
         }
 
+        if (biometricEnabled && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            executor = ContextCompat.getMainExecutor(this);
+            biometricPrompt = new androidx.biometric.BiometricPrompt(LoginActivity.this, executor,
+                    new androidx.biometric.BiometricPrompt.AuthenticationCallback() {
+                @Override
+                public void onAuthenticationError(int errorCode,
+                                                  @NonNull CharSequence errString) {
+                    super.onAuthenticationError(errorCode, errString);
+                }
+
+                @Override
+                public void onAuthenticationSucceeded(
+                        @NonNull androidx.biometric.BiometricPrompt.AuthenticationResult result) {
+                    super.onAuthenticationSucceeded(result);
+                    String email = mPreferences.getString("savedEmail", "");
+                    String password = mPreferences.getString("savedPassword", "");
+
+                    if (email.isEmpty())
+                        Toast.makeText(LoginActivity.this, "Failed to login automatically. Please try logging in manually.", Toast.LENGTH_LONG).show();
+                    else if (password.isEmpty())
+                        Toast.makeText(LoginActivity.this, "Failed to login automatically. Please try logging in manually.", Toast.LENGTH_LONG).show();
+                    else {
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        attempedAutoLogin = true;
+                        try {
+                            JSONObject requestBody = new JSONObject();
+                            requestBody.put("email", email);
+                            requestBody.put("password", password);
+                            new ServerActivity(LoginActivity.this, AppCodes.login).execute(requestBody);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            mProgressBar.setVisibility(View.INVISIBLE);
+                            Toast.makeText(LoginActivity.this, "Failed to login automatically. Please try logging in manually.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+
+                @Override
+                public void onAuthenticationFailed() {
+                    super.onAuthenticationFailed();
+                }
+            });
+
+            promptInfo = new androidx.biometric.BiometricPrompt.PromptInfo.Builder()
+                    .setTitle("Biometric login for my app")
+                    .setSubtitle("Log in using your biometric credential")
+                    .setNegativeButtonText("Use account password")
+                    .build();
+
+
+            mbiometricLoginButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BiometricManager biometricManager = BiometricManager.from(LoginActivity.this);
+                    switch (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
+                        case BiometricManager.BIOMETRIC_SUCCESS:
+                            biometricPrompt.authenticate(promptInfo);
+                            break;
+                        case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
+                            Toast.makeText(LoginActivity.this, "No biometric features available on this device.", Toast.LENGTH_LONG).show();
+                            break;
+                        case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
+                            Toast.makeText(LoginActivity.this, "Biometric features are currently unavailable.", Toast.LENGTH_LONG).show();
+                            break;
+                        case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
+                            // Prompts the user to create credentials that your app accepts.
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                final Intent enrollIntent = new Intent(Settings.ACTION_BIOMETRIC_ENROLL);
+                                enrollIntent.putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                                        BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.DEVICE_CREDENTIAL);
+                                startActivityForResult(enrollIntent, ACTIVITY_FINISH_RESULT);
+                            } else {
+                                Toast.makeText(LoginActivity.this, "No fingerprints enrolled. Please enroll a fingerprint in the Settings of your phone.", Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                    }
+                }
+            });
+        }
+
         SpannableStringBuilder builder = new SpannableStringBuilder();
         String colorPart = "Register here";
         String greyPart = "Don't have an account? ";
@@ -143,8 +248,8 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
                     mProgressBar.setVisibility(View.VISIBLE);
                     try {
                         JSONObject requestBody = new JSONObject();
-                        requestBody.put("email", mEmail.getText().toString());
-                        requestBody.put("password", mPassword.getText().toString());
+                        requestBody.put("email", Objects.requireNonNull(mEmail.getText()).toString());
+                        requestBody.put("password", Objects.requireNonNull(mPassword.getText()).toString());
                         new ServerActivity(LoginActivity.this, AppCodes.login).execute(requestBody);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -320,11 +425,10 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
                             finish();
                         }
 
-
                         break;
                     }
                     case "error": {
-                        if (attempedAutoLogin)
+                        if (attempedAutoLogin && !biometricEnabled)
                             Toast.makeText(LoginActivity.this, "Failed to login automatically. Please try logging in manually.", Toast.LENGTH_LONG).show();
                         switch (response.getString("errorMessage")) {
                             case "Email does not exist":
@@ -360,7 +464,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
             }
 
         } else {
-            if (attempedAutoLogin)
+            if (attempedAutoLogin && !biometricEnabled)
                 Toast.makeText(LoginActivity.this, "Failed to login automatically. Please try logging in manually.", Toast.LENGTH_LONG).show();
             new AlertDialog.Builder(LoginActivity.this)
                     .setTitle("Login Error")

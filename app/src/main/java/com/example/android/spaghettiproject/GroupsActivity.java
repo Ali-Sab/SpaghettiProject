@@ -5,6 +5,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,6 +26,8 @@ public class GroupsActivity extends AppCompatActivity {
     private final LinkedList<String> mGroupList = new LinkedList<>();
     private RecyclerView mRecyclerView;
     private RecyclerAdapter mAdapter;
+    private SharedPreferences mPreferences;
+    private final String sharedPrepFile = "com.example.android.spaghettiproject";
 
     GlobalActivity global = (GlobalActivity)getApplication();
 
@@ -33,6 +36,8 @@ public class GroupsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+
+        mPreferences = getSharedPreferences(sharedPrepFile, MODE_PRIVATE);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -83,6 +88,9 @@ public class GroupsActivity extends AppCompatActivity {
                         LoginActivity.class);
                 Toast.makeText(this, "Successfully logged out", Toast.LENGTH_LONG).show();
                 loginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                SharedPreferences.Editor preferenceEditor = mPreferences.edit();
+                preferenceEditor.clear();
+                preferenceEditor.apply();
                 startActivity(loginIntent);
                 finish();
                 return true;

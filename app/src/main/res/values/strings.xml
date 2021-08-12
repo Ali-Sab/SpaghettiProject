@@ -29,5 +29,6 @@
     <string name="register_phone_invalid">Phone number is invalid</string>
     <string name="register_sign_in">Have an account? Log in</string>
     <string name="keep_me_logged_in">Keep me logged in.</string>
+    <string name="use_touch_id">Use Touch ID</string>
 
 </resources>
