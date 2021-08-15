@@ -30,5 +30,7 @@
     <string name="register_sign_in">Have an account? Log in</string>
     <string name="keep_me_logged_in">Keep me logged in.</string>
     <string name="use_touch_id">Use Touch ID</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="forgot_password_help">Enter your email and new password. Then, click the button below to send an email to confirm the change.</string>
 
 </resources>

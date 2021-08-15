@@ -55,6 +55,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
     private TextInputEditText mPassword;
     private Button mLoginButton;
     private TextView mGoToRegister;
+    private TextView mForgotPassword;
     private ProgressBar mProgressBar;
     private CheckBox mKeepLoggedIn;
     private Button mbiometricLoginButton;
@@ -105,6 +106,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
         mPassword = (TextInputEditText) findViewById(R.id.editTextPassword);
         mLoginButton = (Button) findViewById(R.id.btnLogin);
         mGoToRegister = (TextView) findViewById(R.id.textViewProfile);
+        mForgotPassword = (TextView) findViewById(R.id.textViewForgotPassword);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mKeepLoggedIn = (CheckBox) findViewById(R.id.checkBoxLogin);
         mbiometricLoginButton = findViewById(R.id.biometric_login);
@@ -219,6 +221,8 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
                                 Toast.makeText(LoginActivity.this, "No fingerprints enrolled. Please enroll a fingerprint in the Settings of your phone.", Toast.LENGTH_LONG).show();
                             }
                             break;
+                        default:
+                            Toast.makeText(LoginActivity.this, "Error using biometric features. Please login manually.", Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -237,27 +241,30 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
 
         mGoToRegister.setText(builder);
 
-        mLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!emailIsValid)
-                    Toast.makeText(LoginActivity.this, R.string.register_email_invalid, Toast.LENGTH_LONG).show();
-                else if (!passwordIsValid)
-                    Toast.makeText(LoginActivity.this, R.string.register_password_invalid, Toast.LENGTH_LONG).show();
-                else {
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    try {
-                        JSONObject requestBody = new JSONObject();
-                        requestBody.put("email", Objects.requireNonNull(mEmail.getText()).toString());
-                        requestBody.put("password", Objects.requireNonNull(mPassword.getText()).toString());
-                        new ServerActivity(LoginActivity.this, AppCodes.login).execute(requestBody);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        mProgressBar.setVisibility(View.INVISIBLE);
-                        Toast.makeText(LoginActivity.this, "Technical error, please try again", Toast.LENGTH_LONG).show();
-                    }
+        mLoginButton.setOnClickListener(v -> {
+            if (!emailIsValid)
+                Toast.makeText(LoginActivity.this, R.string.register_email_invalid, Toast.LENGTH_LONG).show();
+            else if (!passwordIsValid)
+                Toast.makeText(LoginActivity.this, R.string.register_password_invalid, Toast.LENGTH_LONG).show();
+            else {
+                mProgressBar.setVisibility(View.VISIBLE);
+                try {
+                    JSONObject requestBody = new JSONObject();
+                    requestBody.put("email", Objects.requireNonNull(mEmail.getText()).toString());
+                    requestBody.put("password", Objects.requireNonNull(mPassword.getText()).toString());
+                    new ServerActivity(LoginActivity.this, AppCodes.login).execute(requestBody);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(LoginActivity.this, "Technical error, please try again", Toast.LENGTH_LONG).show();
                 }
             }
+        });
+
+        mForgotPassword.setOnClickListener(v -> {
+            Intent forgotPasswordIntent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+            forgotPasswordIntent.putExtra("email", ((mEmail.getText() != null) ? mEmail.getText() : "").toString());
+            startActivityForResult(forgotPasswordIntent, AppCodes.ACTIVITY_FINISH_RESULT);
         });
 
         mEmail.addTextChangedListener(new TextWatcher() {
@@ -333,9 +340,6 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
                 }
             }
         });
-
-        Intent intent = getIntent();
-        mEmail.setText(intent.getStringExtra("email"));  //Null case is checked by Android SDK for .setText()
     }
 
 
@@ -371,7 +375,7 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
 
     public void goToProfile(View view) {
         Intent profileIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-        profileIntent.putExtra("email", mEmail.getText().toString());
+        profileIntent.putExtra("email", ((mEmail.getText() != null) ? mEmail.getText() : "").toString());
         startActivityForResult(profileIntent, AppCodes.ACTIVITY_FINISH_RESULT);
     }
 
@@ -379,8 +383,13 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == AppCodes.ACTIVITY_FINISH_RESULT) {
+        if (requestCode == ACTIVITY_FINISH_RESULT) {
             mEmail.setText(data.getStringExtra("email"));
+            emailIsValid = android.util.Patterns.EMAIL_ADDRESS.matcher(((mEmail.getText() != null) ? mEmail.getText() : "").toString()).matches();
+            if (emailIsValid)
+                mEmail.setTextColor(Color.BLACK);
+            else
+                mEmail.setTextColor(Color.parseColor("#FF353A"));
         }
     }
 
@@ -401,18 +410,16 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
                             }
                             preferencesEditor.apply();
 
+                            //can probably change to .setNeutralButton
                             new AlertDialog.Builder(LoginActivity.this)
                                     .setTitle("Success!")
                                     .setMessage("You're now logged in")
-                                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() { //can probably change to .setNeutralButton
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                            intent.putExtra("email", Objects.requireNonNull(mEmail.getText()).toString());
-                                            startActivity(intent);
-                                            finish();
-                                        }
+                                    .setNegativeButton(android.R.string.ok, (dialogInterface, i) -> {           //can probably change to .setNeutralButton
+                                        Intent intent = new Intent(LoginActivity.this, GroupsActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.putExtra("email", Objects.requireNonNull(mEmail.getText()).toString());
+                                        startActivity(intent);
+                                        finish();
                                     })
                                     .setIcon(getResources().getDrawable(R.drawable.ic_checkmark))
                                     .show();
@@ -452,12 +459,13 @@ public class LoginActivity extends AppCompatActivity implements ServerActivity.A
                             case "Missing password":
                                 Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_LONG).show();
                                 break;
-                            case "Request failed to send":
+                            default:    // Also covers case: "Request failed to send"
                                 Toast.makeText(LoginActivity.this, "Technical error occurred, please try again", Toast.LENGTH_LONG).show();
-                                break;
                         }
                         break;
                     }
+                    default:
+                        Toast.makeText(LoginActivity.this, "Technical error occurred, please try again", Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

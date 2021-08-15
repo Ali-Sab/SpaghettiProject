@@ -34,6 +34,8 @@ import org.json.JSONObject;
 
 import retrofit2.Retrofit;
 
+import static com.example.android.spaghettiproject.AppCodes.ACTIVITY_FINISH_RESULT;
+
 public class RegisterActivity extends AppCompatActivity implements ServerActivity.AsyncResponse {
 
     private EditText mEmail;
@@ -41,7 +43,6 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
     private EditText mPassword2;
     private EditText mPhoneNumber;
     private Button mRegisterButton;
-    private TextView mLogin;
     private TextView mGoToLogin;
     private String password;
     private EditText mName;
@@ -69,7 +70,6 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
         mEmail = (EditText) findViewById(R.id.editTextEmail);
         mPassword1 = (EditText) findViewById(R.id.editTextPassword1);
         mPassword2 = (EditText) findViewById(R.id.editTextPassword2);
-        mLogin = (TextView) findViewById(R.id.register_textViewLogin);
         mName = (EditText) findViewById(R.id.editTextName);
         mPhoneNumber = (EditText) findViewById(R.id.editTextPhone);
         mGoToLogin = (TextView) findViewById(R.id.register_textViewLogin);
@@ -140,12 +140,12 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
         else
             mEmail.setTextColor(Color.parseColor("#FF353A"));
 
-        mLogin.setOnClickListener(new View.OnClickListener() {
+        mGoToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("email", mEmail.getText().toString());
-                setResult(Activity.RESULT_OK, returnIntent);
+                setResult(ACTIVITY_FINISH_RESULT, returnIntent);
                 finish();
             }
         });
@@ -378,7 +378,7 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         Intent returnIntent = new Intent();
                                         returnIntent.putExtra("email", mEmail.getText().toString());
-                                        setResult(Activity.RESULT_OK, returnIntent);
+                                        setResult(ACTIVITY_FINISH_RESULT, returnIntent);
                                         finish();
                                     }
                                 })
@@ -422,13 +422,16 @@ public class RegisterActivity extends AppCompatActivity implements ServerActivit
                                         .setIcon(android.R.drawable.ic_dialog_alert)
                                         .show();
                                 break;
+                            default:
+                                Toast.makeText(RegisterActivity.this, "Technical error occurred, please try again", Toast.LENGTH_LONG).show();
                         }
                         break;
+                    default:
+                        Toast.makeText(RegisterActivity.this, "Technical error occurred, please try again", Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         } else {
             new AlertDialog.Builder(RegisterActivity.this)
                     .setTitle("Registration Error")
