@@ -8,6 +8,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,6 +40,8 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
     private final LinkedList<String> mGroupList = new LinkedList<>();
     private RecyclerView mRecyclerView;
     private RecyclerAdapter mAdapter;
+    private SharedPreferences mPreferences;
+    private final String sharedPrepFile = "com.example.android.spaghettiproject";
     private ProgressBar progressBar;
     private JSONArray dataArray;
 
@@ -48,6 +51,8 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+
+        mPreferences = getSharedPreferences(sharedPrepFile, MODE_PRIVATE);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -98,6 +103,25 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
                 builder.show();
             }
         });
+
+        mGroupList.addLast("Sample 1");
+        mGroupList.addLast("test???");
+
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        mAdapter = new RecyclerAdapter(this, mGroupList);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+       // ItemTouchHelper helper = new ItemTouchHelper(new My ItemTouchCallback(mAdapter));
+        //helper.attachToRecyclerView(recyclerView);
+
+        Intent intent = getIntent();
+        String email = intent.getStringExtra("email");
+        String autoLogin = intent.getStringExtra("autoLogin");
+        if (autoLogin != null && autoLogin.equals("true")) {
+            Toast.makeText(GroupsActivity.this, "Logged in as " + email, Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
@@ -115,6 +139,9 @@ public class GroupsActivity extends AppCompatActivity implements ServerActivity.
                         LoginActivity.class);
                 Toast.makeText(this, "Successfully logged out", Toast.LENGTH_LONG).show();
                 loginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                SharedPreferences.Editor preferenceEditor = mPreferences.edit();
+                preferenceEditor.clear();
+                preferenceEditor.apply();
                 startActivity(loginIntent);
                 finish();
                 return true;
